@@ -41,7 +41,7 @@ The team would be creating an application using shiny that allows the user to do
 
 ## **4. Relevant Work**
 
-### **4.1. Signal**
+### **4.1. Signal ([Ang et al., n.d.](https://wiki.smu.edu.sg/1819t2is415/Signal_Research_Paper))**
 
 This project was done by our seniors with the aim to discover the network-constrained spatio-temporal patterns of traffic accidents Leeds, United Kingdom. The following four main analyses were explored in their project:
 
@@ -61,7 +61,7 @@ This project was done by our seniors with the aim to discover the network-constr
 
     -   To determine if there is spatial correlation between accident points and variables selected using pair correlation function
 
-### **4.2. Detecting traffic accident clusters with network kernel density estimation and local spatial statistics: an integrated approach**
+### **4.2. Detecting traffic accident clusters with network kernel density estimation and local spatial statistics: an integrated approach ([Xie & Yan, 2013](https://doi.org/10.1016/j.jtrangeo.2013.05.009))**
 
 This study highlights the limitations in analysing traffic accidents through conventional Kernel Density Estimation (KDE) within a  two-dimensional space as accidents are often constrained to network spaces. As such, the authors proposed the use of Network Constrained KDE (NetKDE) as a more suitable approach. However, both approaches lack formal spatial statistical methods in determining the statistical significance of accident hotspots. In order to address these limitations, the authors proposed to integrate network KDE with local Moran's I for hotspot detection so as to leverage the strengths of each approach.
 
@@ -69,15 +69,11 @@ This study highlights the limitations in analysing traffic accidents through con
 
 In this project, we will be using the following datasets:
 
-Aspatial data
-
-Thailand Road Accident \[2019-2022\]
-
-Geospatial data
-
-Thailand Subnational Administrative Boundaries
-
-Geofabrik’s OpenStreetMap road data for Thailand
+| Data                                             | Type       | Format |
+|--------------------------------------------------|------------|--------|
+| Thailand Road Accident \[2019-2022\]             | Aspatial   | .csv   |
+| Thailand Subnational Administrative Boundaries   | Geospatial | .shp   |
+| Geofabrik’s OpenStreetMap road data for Thailand | Geospatial | .shp   |
 
 ### **5.1. Thailand Road Accident \[2019-2022\]**
 
@@ -161,8 +157,19 @@ In this segment, we will use 2nd Order Kernel Density Estimation methods instead
 
 As we hope that the findings from this study can ultimately enhance road safety in Thailand, we will be creating interactive dashboards to empower urban planners, policymakers, and traffic authorities to explore comprehensive analyses, including accident hotspots, temporal patterns, network influences, and key metrics, facilitating informed decision-making in doing so.
 
-### **7. Storyboard**
+## **7. Storyboard**
 
-### **8. Timeline**
+## **8. Timeline**
 
-### **9. References**
+![](img/Project-timeline.png)
+
+## **9. References**
+
+Ang, J. Y., Chong, S., & Tan, Y. L. (2019, April 15). Signal Research Paper. SMU Wikipedia.
+https://wiki.smu.edu.sg/1819t2is415/Signal_Research_Paper
+
+Safety and Mobility (SAM) & Social Determinants of Health (SDH). (2023, December 13). *Global status report on road safety 2023*. World Health Organization. https://www.who.int/publications/i/item/9789240086517
+
+Social Determinants of Health (SDH). (2018, June 17). *Global status report on road safety 2018*. World Health Organization. https://www.who.int/publications/i/item/9789241565684
+
+Xie, Z., & Yan, J. J. (2013). Detecting traffic accident clusters with network kernel density estimation and local spatial statistics: an integrated approach. *Journal of Transport Geography*, *31*, 64–71. https://doi.org/10.1016/j.jtrangeo.2013.05.009

@@ -13,6 +13,9 @@ website:
         text: Poster
       - href: gaa-project/user-guide.html
         text: User Guide
+      - icon: github
+        href: https://github.com/tangxy0321/gga-ThaiRoad
+        aria-label: GitHub
         
 
 format:
