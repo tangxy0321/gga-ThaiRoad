@@ -1,0 +1,24 @@
+project:
+  type: website
+
+website:
+  title: "IS415 Group 10"
+  navbar:
+    right:
+      - href: index.html
+        text: Overview
+      - href: gaa-project/proposal.html
+        text: Project Proposal
+      - href: gaa-project/poster.html
+        text: Poster
+      - href: gaa-project/user-guide.html
+        text: User Guide
+        
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+
+editor: visual
+
