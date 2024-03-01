@@ -73,7 +73,7 @@ In this project, we will be using the following datasets:
 |--------------------------------------------------|------------|--------|
 | Thailand Road Accident \[2019-2022\]             | Aspatial   | .csv   |
 | Thailand Subnational Administrative Boundaries   | Geospatial | .shp   |
-| Geofabrik’s OpenStreetMap road data for Thailand | Geospatial | .shp   |
+| Geofabrik's OpenStreetMap road data for Thailand | Geospatial | .shp   |
 
 ### **5.1. Thailand Road Accident \[2019-2022\]**
 
@@ -85,7 +85,7 @@ The **Thailand Subnational Administrative Boundaries** dataset is available in E
 
 ### **5.3. OpenStreetMap road data for Thailand**
 
-The **Geofabrik’s OpenStreetMap road data** can be sourced from Geofabrik Download Server and is available in ESRI shape file format. It contains various layers such as roads, buildings and points of interest. We will be using this dataset to map out the road networks in Thailand. The data source is available [here](https://download.geofabrik.de/asia/thailand.html).
+The **Geofabrik's OpenStreetMap road data** can be sourced from Geofabrik Download Server and is available in ESRI shape file format. It contains various layers such as roads, buildings and points of interest. We will be using this dataset to map out the road networks in Thailand. The data source is available [here](https://download.geofabrik.de/asia/thailand.html).
 
 ## **6. Methodology**
 
@@ -137,6 +137,36 @@ In this segment, we will use 1st Order Kernel Density Estimation methods to furt
 
 By employing spatial point analysis on the traffic accidents in Thailand, we can explore the geographical distribution of accident hotspots and identify areas with higher risk.
 
+**Fixed and Adaptive Network Kernel Density**
+
+This approach allows us to create smoothed representations of accident density, adjusting for varying densities of points across the region.
+
+**Nearest Neighbour Analysis**
+
+By examining the proximity of accidents to one another, we can gain insights into clustering patterns and identify regions with significant accident concentrations.
+
+#### **6.3.3. 2nd Order Kernel Density Estimation**
+
+In this segment, we will use 2nd Order Kernel Density Estimation methods instead to further refine our understanding of traffic accidents in Thailand. The 2nd Order Kernel Density Estimation will allow us to capture variations and fine-tune our identification of high-risk zones.
+
+**G Function**
+
+This function is utilized to analyze the distribution of distances between pairs of events, providing insights into the clustering or dispersion of accidents.
+
+**F Function**
+
+The F function is employed to assess the distribution of event-to-nearest-neighbor distances, aiding in the detection of clustering patterns.
+
+**K Function**
+
+By examining the cumulative distribution function of event-to-event distances, the K function helps assess spatial patterns and clustering in the distribution of accidents.
+
+**L Function**
+
+The L function is a transformation of the K function, aiding in the interpretation of spatial patterns and providing a nuanced understanding of accident distribution in Thailand.
+
+#### **6.3.4.  Network-constrained Spatial Point Patterns Analysis**
+
 **Network-constrained Kernel Density Estimation (NKDE)**
 
 We will also explore the network-constrained spatial point analysis to gather insights into how the city's road network contributes to accident occurrences, allowing for targeted interventions in critical areas.
@@ -145,13 +175,7 @@ We will also explore the network-constrained spatial point analysis to gather in
 
 In addition to that, we will explore whether festive periods contribute to the occurrence of traffic accidents. By examining temporal patterns and correlating them with festive events, we seek to provide a comprehensive understanding of the factors influencing road safety during celebratory periods.
 
-#### **6.3.3. 2nd Order Kernel Density Estimation**
-
-In this segment, we will use 2nd Order Kernel Density Estimation methods instead to further refine our understanding of traffic accidents in Thailand. The 2nd Order Kernel Density Estimation will allow us to capture variations and fine-tune our identification of high-risk zones.
-
-**G/F/K/L Function**
-
-**Complete spatial randomness test**
+Additionally, the analysis will involve exploring Network G- and K- Functions to further assess spatial and temporal patterns within the context of the road network.
 
 #### **6.3.4. Interactive dashboards using Shiny**
 
@@ -159,17 +183,76 @@ As we hope that the findings from this study can ultimately enhance road safety 
 
 ## **7. Storyboard**
 
+The 4 main analyses above will consist of the following filters to allow for users to configure for the results that most suit them:
+
+::: panel-tabset
+## Province Filter
+
+Filter to allow for selection of specific province for analysis.
+
+## Environment Filters
+
+**Weather Conditions**
+
+To filter for accidents with or without weather conditions.
+
+## Time Filters
+
+**Year**
+
+Accident year range
+
+**Days of the week**
+
+Monday to Sunday.
+
+**Hours of the day**
+
+Select specific hours that the accident occur in.
+
+## Accident Type Filters
+
+**Vehicle Type**
+
+Type of vehicles that are involved in the accident.
+
+**Fatal Accident?**
+
+Whether the accident involves any casualty.
+
+## Analysis Specific Filters
+
+**Kernel Distance Slider**
+
+For adjusting kernel distance when doing KDE.
+
+**Fixed/Adaptive KDE Selection**
+
+For toggling between fixed and adaptive KDE.
+
+**Simulation Slider**
+
+Number of simulations for G/F/K/L functions.
+
+**Variable Selection**
+
+variable to select for G/F/K/L Functions.
+:::
+
+![](images/storyboard1.png)
+
+![](images/storyboard2.png)
+
 ## **8. Timeline**
 
 ![](img/Project-timeline.png)
 
 ## **9. References**
 
-Ang, J. Y., Chong, S., & Tan, Y. L. (2019, April 15). Signal Research Paper. SMU Wikipedia.
-https://wiki.smu.edu.sg/1819t2is415/Signal_Research_Paper
+Ang, J. Y., Chong, S., & Tan, Y. L. (2019, April 15). Signal Research Paper. SMU Wikipedia. https://wiki.smu.edu.sg/1819t2is415/Signal_Research_Paper
 
 Safety and Mobility (SAM) & Social Determinants of Health (SDH). (2023, December 13). *Global status report on road safety 2023*. World Health Organization. https://www.who.int/publications/i/item/9789240086517
 
 Social Determinants of Health (SDH). (2018, June 17). *Global status report on road safety 2018*. World Health Organization. https://www.who.int/publications/i/item/9789241565684
 
-Xie, Z., & Yan, J. J. (2013). Detecting traffic accident clusters with network kernel density estimation and local spatial statistics: an integrated approach. *Journal of Transport Geography*, *31*, 64–71. https://doi.org/10.1016/j.jtrangeo.2013.05.009
+Xie, Z., & Yan, J. J. (2013). Detecting traffic accident clusters with network kernel density estimation and local spatial statistics: an integrated approach. *Journal of Transport Geography*, *31*, 64--71. https://doi.org/10.1016/j.jtrangeo.2013.05.009
