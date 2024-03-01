@@ -25,7 +25,7 @@
     "href": "gaa-project/proposal.html#project-objectives",
     "title": "Project Proposal",
     "section": "3. Project Objectives",
-    "text": "3. Project Objectives\nThe team would be creating an application using shiny that allows the user to do the following:\n\nExploratory data analysis to gain rough idea of the context of data\n1st Order Kernel Density Estimation\n\nNetwork-constrained Kernel Density Estimation (NKDE)\nTemporal Network Kernel Density Estimation (TNKDE)\n\n2nd Order Kernel Density Estimation\n\nUse appropriate functions from F, G, K, and L for spatial cluster analysis\nConduct a complete spatial randomness test, then a Monte Carlo test, to investigate correlation between spatial factor and road accident occurrence"
+    "text": "3. Project Objectives\nThe team would be creating an application using shiny that allows the user to do the following:\n\nExploratory data analysis to gain rough idea of the context of data\n1st Order Kernel Density Estimation\n\nFixed and Adaptived Kernel Density Estimation\nNearest Neighbour Analysis\n\n2nd Order Kernel Density Estimation\n\nUse appropriate functions from F, G, K, and L for spatial cluster analysis\nConduct a complete spatial randomness test, then a Monte Carlo test, to investigate correlation between spatial factor and road accident occurrence\n\nNetwork-constrained Spatial Point Pattern Analysis\na. Network-constrained Kernel Density Estimation (NKDE)\nb. Temporal Network Kernel Density Estimation (TNKDE)"
   },
   {
     "objectID": "gaa-project/proposal.html#relevant-work",

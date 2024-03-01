@@ -29,15 +29,21 @@ The team would be creating an application using shiny that allows the user to do
 
 2.  1st Order Kernel Density Estimation
 
-    a.  Network-constrained Kernel Density Estimation (NKDE)
+    a.  Fixed and Adaptived Kernel Density Estimation
 
-    b.  Temporal Network Kernel Density Estimation (TNKDE)
+    b.  Nearest Neighbour Analysis
 
 3.  2nd Order Kernel Density Estimation
 
     a.  Use appropriate functions from F, G, K, and L for spatial cluster analysis
 
     b.  Conduct a complete spatial randomness test, then a Monte Carlo test, to investigate correlation between spatial factor and road accident occurrence
+
+4.  Network-constrained Spatial Point Pattern Analysis
+
+    a\. Network-constrained Kernel Density Estimation (NKDE)
+
+    b\. Temporal Network Kernel Density Estimation (TNKDE)
 
 ## **4. Relevant Work**
 
@@ -165,7 +171,7 @@ By examining the cumulative distribution function of event-to-event distances, t
 
 The L function is a transformation of the K function, aiding in the interpretation of spatial patterns and providing a nuanced understanding of accident distribution in Thailand.
 
-#### **6.3.4.  Network-constrained Spatial Point Patterns Analysis**
+#### **6.3.4. Network-constrained Spatial Point Patterns Analysis**
 
 **Network-constrained Kernel Density Estimation (NKDE)**
 
