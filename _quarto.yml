@@ -13,6 +13,8 @@ website:
         text: Poster
       - href: gaa-project/user-guide.html
         text: User Guide
+      - href: gaa-project/Thai_Accidents.html
+        text: Dataset Exploration
       - icon: github
         href: https://github.com/tangxy0321/gga-ThaiRoad
         aria-label: GitHub
