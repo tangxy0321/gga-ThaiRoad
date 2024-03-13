@@ -1,0 +1,293 @@
+---
+title: "Data Preparation"
+format: 
+  html:
+    code-fold: true
+    code-summary: "Show code"
+execute: 
+  eval: true
+  echo: true
+  freeze: auto
+  warning: false
+date: "`r Sys.Date()`"
+author:
+  - Tan Jun Sheng Jackson
+---
+
+# 1. Loading required R packages
+
+The R packages that we will be using to prepare our data are as follows:
+
+-   **lubridate:** To handle the date formatting
+
+-   **sf:** Import, manage and process vector-based geospatial data in R.
+
+-   **tidyverse:** a collection of packages for data science tasks
+
+-   **gridExtra:** For displaying plots in the same column/row.
+
+-   **tmap:** Provides functions for plotting cartographic quality static point patterns maps or interactive maps by using leaflet API.
+
+-   **maptools:** Provides a set of tools for manipulating geographic data.
+
+```{r}
+pacman::p_load(lubridate, sf, tidyverse, gridExtra, tmap, maptools)
+```
+
+# 2. Importing the datasets
+
+The datasets that we will be using are as follow:
+
+::: panel-tabset
+## Thailand Road Accidents Dataset
+
+We will first drop the rows that have NA in lon and lat, as they will be useless for our analysis.
+
+```{r}
+accidents <- read.csv("data/thai_road_accident_2019_2022.csv") %>% 
+  drop_na(latitude) %>% 
+  drop_na(longitude)
+```
+
+We will then convert the dataframe to SF dataframe, with the EPSG code 4239 for Thailand.
+
+```{r}
+accidents_sf <- st_as_sf(accidents, 
+                       coords = c("longitude", "latitude"),
+                       crs=4326) %>%
+  st_transform(crs = 4239)
+```
+
+## Boundary of Thailand
+
+We use ADM0_EN dataset as it is the boundary of the whole of Thailand.
+
+```{r}
+thai_boundary <- st_read(dsn = "data/thai_adm_boundary", 
+                 layer = "tha_admbnda_adm0_rtsd_20220121") %>%
+                st_transform(crs = 4239) %>%
+                dplyr::select("ADM0_EN")
+```
+
+## OSM Thailand Roads Dataset
+
+```{r}
+thai_roads <- st_read(dsn = "data/thai_road_osm", 
+              layer = "gis_osm_roads_free_1") %>%
+              st_transform(crs = 4239) %>%
+              dplyr::select(-ref,-name)
+```
+:::
+
+# **3. Datasets Overview**
+
+General overview of the dataset
+
+::: panel-tabset
+## Thailand Road Accidents
+
+```{r}
+glimpse(accidents_sf)
+```
+
+## Boundary of Thailand
+
+```{r}
+glimpse(thai_boundary)
+plot(st_geometry(thai_boundary))
+```
+
+## OSM Thailand Roads
+
+```{r}
+glimpse(thai_roads)
+```
+:::
+
+```{r}
+tmap_mode("plot")
+tm_shape(accidents_sf) +
+  tm_dots("province_en")
+```
+
+We can see from the map plot that there are points outside of Thailand, something we would like to exclude. We can do so by using *`st_intersection()`* function on accidents_sf using the thai_boundary.
+
+```{r}
+accidents_thai_sf <- st_intersection(accidents_sf, thai_boundary)
+```
+
+# 4. Simplifying Variables
+
+Some of the factor variables in the datasets have too many options, and most of them can be simplified into a few general categories. By doing this, it will ease our analysis process and also make the resulting output more comprehensible.
+
+## 4.1 Accident Cause Categories
+
+The first one is the **presumed_cause** variable of the **accidents_sf** dataset, which we can split into 5 different categories, mainly Driver Factors, Traffic Violations, External Factors, Speeding (as it is the top leading cause of accidents), and Others. Looking at the existing categories:
+
+```{r}
+accident_categories <- unique(accidents_sf$presumed_cause)
+accident_categories
+```
+
+Putting them into 5 general categories:
+
+```{r}
+driver_factors <- accident_categories[c(1,3,6,9, 14, 21, 30, 44, 49, 50, 52:54)]
+traffic_violations <- accident_categories[c(3:5, 7, 11:13, 16, 17, 19, 23:26, 29, 31, 35)]
+external_factors <- accident_categories[c(10, 15, 18, 20, 22, 27, 28, 32, 33, 34, 36:38, 39, 40:43, 45:48, 51)]
+speeding <- accident_categories[c(2)]
+```
+
+Updating the accident categories:
+
+```{r}
+accidents_thai_sf$"accident_categories" <- as.factor(
+  ifelse(accidents_thai_sf$presumed_cause %in% driver_factors, 'driver_factors', 
+  ifelse(accidents_thai_sf$presumed_cause %in% traffic_violations, 'traffic_violations', 
+  ifelse(accidents_thai_sf$presumed_cause %in% external_factors, 'external_factors',
+  ifelse(accidents_thai_sf$presumed_cause %in% speeding, 'speeding',
+  'others')))))
+```
+
+## 4.2 Vehicle Categories
+
+Next up we will split the vehicle_type into 4 categories, two_wheeled, four_wheeled, heavy_duty, and others.
+
+```{r}
+vehicle_categories <- unique(accidents_thai_sf$vehicle_type)
+vehicle_categories
+```
+
+```{r}
+two_wheeled <- vehicle_categories[c(1,5,10,15)]
+four_wheeled <- vehicle_categories[c(2,7,13)]
+heavy_duty <- vehicle_categories[c(3,6,8,9,11,14)]
+```
+
+```{r}
+accidents_thai_sf$"vehicle_categories" <- as.factor(
+  ifelse(accidents_thai_sf$vehicle_type %in% two_wheeled, 'two_wheeled', 
+  ifelse(accidents_thai_sf$vehicle_type %in% four_wheeled, 'four_wheeled', 
+  ifelse(accidents_thai_sf$vehicle_type %in% heavy_duty, 'heavy_duty', 
+  'others'))))
+```
+
+## 4.3 Weather Condition and Fatality
+
+We can also simplify the weather_condition and number_of_fatalities column to whether there is a weather condition, and if the accident is fatal.
+
+```{r}
+accidents_thai_sf <- accidents_thai_sf %>%
+  mutate(weather_condition = ifelse((weather_condition == "clear"), "no", "yes"),
+         fatal_accident = ifelse((number_of_fatalities >= 1), "yes", "no"))
+```
+
+## 4.4 Datetime
+
+The exact datetime doesn't really provide us with much details. Let us split convert the incident_datetime into datetime object, then split it into year, day of the week, and hour of accident.
+
+```{r}
+accidents_thai_sf$incident_datetime <- as_datetime(
+  accidents_thai_sf$incident_datetime)
+
+accidents_thai_sf <- accidents_thai_sf %>%
+    mutate(year = year(incident_datetime),
+           weekday = wday(incident_datetime,
+                        label=TRUE,
+                        abbr=TRUE),
+         accident_hr = factor(hour(incident_datetime), levels = 0:23))
+```
+
+```{r}
+accidents_thai_sf
+```
+
+# 5. Data Cleaning
+
+## 5.1 Variables Selection
+
+With our necessary variables clean, let us drop the variables that we will not be using.
+
+```{r}
+accidents_thai_sf_clean <- accidents_thai_sf %>%
+  dplyr::select(c(5,14:16,19:24,18))
+```
+
+## 5.2 Invalid Geometries
+
+::: panel-tabset
+## Thailand Road Accidents
+
+```{r}
+test <- st_is_valid(accidents_thai_sf_clean,reason=TRUE)
+
+# Number of invalid geometries
+length(which(test!= "Valid Geometry"))
+
+# Reason
+test[which(test!= "Valid Geometry")]
+```
+
+## Boundary of Thailand
+
+```{r}
+test <- st_is_valid(thai_boundary,reason=TRUE)
+
+# Number of invalid geometries
+length(which(test!= "Valid Geometry"))
+
+# Reason
+test[which(test!= "Valid Geometry")]
+```
+
+## OSM Thailand Roads
+
+```{r}
+test <- st_is_valid(thai_roads ,reason=TRUE)
+
+# Number of invalid geometries
+length(which(test!= "Valid Geometry"))
+
+# Reason
+test[which(test!= "Valid Geometry")]
+```
+:::
+
+No invalid geometries for any of the above dataset.
+
+## 5.3 Missing Values
+
+::: panel-tabset
+## Thailand Road Accidents
+
+```{r}
+accidents_thai_sf_clean[rowSums(is.na(accidents_thai_sf_clean))!=0,]
+```
+
+## Boundary of Thailand
+
+```{r}
+thai_boundary[rowSums(is.na(thai_boundary))!=0,]
+```
+
+## OSM Thailand Roads
+
+```{r}
+thai_roads[rowSums(is.na(thai_roads))!=0,]
+```
+:::
+
+No missing data as well.
+
+# 6. Writing to RDS
+
+```{r}
+write_rds(accidents_thai_sf_clean,
+          "data/rds/accidents_thai.rds")
+
+write_rds(thai_boundary,
+          "data/rds/thai_boundary.rds")
+
+write_rds(thai_roads,
+          "data/rds/thai_roads.rds")
+```
