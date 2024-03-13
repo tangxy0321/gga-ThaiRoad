@@ -1,5 +1,5 @@
 ---
-title: "Thailand_accidents"
+title: "Initial Exploration of Dataset"
 format: 
   html:
     code-fold: true

@@ -7,14 +7,22 @@ website:
     right:
       - href: index.html
         text: Overview
+        
       - href: gaa-project/proposal.html
         text: Project Proposal
+        
       - href: gaa-project/poster.html
         text: Poster
+        
       - href: gaa-project/user-guide.html
         text: User Guide
+        
       - href: gaa-project/Thai_Accidents.html
         text: Dataset Exploration
+        
+      - href: gaa-project/MoM.html
+        text: Minutes of Meeting
+        
       - icon: github
         href: https://github.com/tangxy0321/gga-ThaiRoad
         aria-label: GitHub
