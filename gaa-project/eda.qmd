@@ -1,0 +1,237 @@
+---
+title: "Exploratory Data Analysis"
+format: 
+  html:
+    code-fold: true
+    code-summary: "Show code"
+execute: 
+  eval: true
+  echo: true
+  freeze: auto
+  warning: false
+date: "`r Sys.Date()`"
+author:
+  - Tan Jun Sheng Jackson
+---
+
+# 1. Loading required R packages
+
+The R packages that we will be using to prepare our data are as follows:
+
+-   **sf:** Import, manage and process vector-based geospatial data in R.
+
+-   **tidyverse:** a collection of packages for data science tasks
+
+-   **gridExtra:** For displaying plots in the same column/row.
+
+-   **tmap:** Provides functions for plotting cartographic quality static point patterns maps or interactive maps by using leaflet API.
+
+-   **maptools:** Provides a set of tools for manipulating geographic data.
+
+```{r}
+pacman::p_load(lubridate, sf, tidyverse, gridExtra, tmap, maptools, ggplot2)
+```
+
+# 2. Importing the RDS files
+
+We will be importing the .RDS file prepared in the **data_preparation** document.
+
+```{r}
+accidents_thai <- read_rds("data/rds/accidents_thai.rds")
+accidents_thai
+```
+
+```{r}
+thai_roads <- read_rds("data/rds/thai_roads.rds")
+thai_roads
+```
+
+# 3. Introduction - What causes fatal accident?
+
+## 3.1 Logistic Regression to find statistically significant variables
+
+To find out which variable heavily influence whether an accident is fatal, we can make use of a Logistic Regression to check which one is statistically significant. We first need to create a temporary dataframe and drop the geometry, as the Logistic Regression model can't take in geometry values.
+
+```{r}
+accidents_thai_df <- st_drop_geometry(accidents_thai) %>%
+  mutate(across(where(is.character), as.factor))
+
+sapply(lapply(accidents_thai_df, unique), length)
+```
+
+```{r}
+# Logistic Regression
+glm.def1 <- glm(fatal_accident~.-province_en, data=accidents_thai_df, family=binomial)
+summary(glm.def1)
+```
+
+From the model above, we can see that the more statistically significant variables are accident_categories, vehicle_categories, and weather_condition. Let's try that again with just these 3 variables.
+
+```{r}
+# Logistic Regression with these 3 variables
+glm.def2 <- glm(fatal_accident~accident_categories + vehicle_categories + weather_condition, data=accidents_thai_df, family=binomial)
+summary(glm.def2)
+```
+
+Most of them are statistically significant at the 0.05 level of significance and above.
+
+# 4. Distribution of variables
+
+The first section of our Exploratory Data Analysis allows users to visualise the distributions of the different factors of the accidents in the **accidents_thai** dataset.
+
+## 4.1 Basic Distribution
+
+This is an example of how one of the visualisation of a basic distribution will look like. In this case we are looking at the different categories of cause of accidents.
+
+```{r}
+ggplot(accidents_thai, aes(x=accident_categories)) + 
+  geom_bar() +
+  labs(title = "Accidents by Cause Categories",
+       x = "Accident Cause Categories",
+       y = "Number of Accidents")
+```
+
+## 4.2 Distribution by Proportion
+
+User will be able to toggle between whether they want the distribution plot to be further categorised by another factor, for example here we divide each bar by whether the accident was fatal. This will allow users to gain clearer insights into how one factor is influenced by another.
+
+In the example below, we are looking at both the distribution of accidents with or without weather condition, and the proportion of each that results in fatal accidents. From this graph in particular, there is no clear indication that bad weather is an important factor that contributes to fatality in traffic accidents.
+
+```{r}
+abs_plot <- ggplot(accidents_thai, aes(x = weather_condition, fill = fatal_accident)) + 
+    geom_bar() +
+    labs(title = "Number of Fatal Accidents caused by Weather Condition",
+       x = "Bad Weather Condition?",
+       y = "Number of Accidents") +
+    theme_bw()
+
+prop_plot <- accidents_thai %>%
+  count(weather_condition, fatal_accident) %>%       
+  group_by(weather_condition) %>%
+  mutate(pct= prop.table(n) * 100) %>%
+  ggplot() + aes(weather_condition, pct, fill=fatal_accident) +
+  geom_bar(stat="identity") +
+  geom_text(aes(label=paste0(sprintf("%1.1f", pct),"%")),
+            position=position_stack(vjust=0.5)) +
+  labs(title = "Proportion of Fatal Accidents caused by Weather Condition",
+       x = "Bad Weather Condition?",
+       y = "Proportion of Accidents") +
+  theme_bw()
+
+grid.arrange(abs_plot, prop_plot, nrow=2)
+```
+
+# 5. Ranking of variables by Province
+
+The next section available would allow users to visualise the different variables ranked across the different provinces. The user would be able to choose the top/bottom X number of province they want to see, and also the variable they want to rank the plot by. In the code below, we are plotting the top 10 provinces in terms of raw number of accidents in each.
+
+```{r}
+accidents_top10 <- accidents_thai %>%
+  group_by(province_en) %>%
+  summarise(total_count=n()) %>%
+  top_n(10, total_count) %>%
+  .$province_en
+
+ggplot(accidents_thai[accidents_thai$province_en %in% accidents_top10,], 
+       aes(x=province_en)) + geom_bar() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  labs(title = "Top 10 Provinces with most recorded accidents",
+       x = "Provinces",
+       y = "Number of Accidents")
+```
+
+# 6. Visualising Spatial Points using tmap
+
+Apart from traditional plots, we have a section that allows geospatial exploration of the dataset, as this module is, afterall, about geospatial analytics. This section in particular allows for users to visualise accident points across Thailand through a variety of filters available, like time specific filters (E.g. day of week, year, hour of day), province, fatality of accident and such. This will better allow for users to get a good initial idea of what they are going to explore in the later sections, especially 1st and 2nd order kernel density estimation.
+
+In the code below, we will be using **tmap** functions to display accidents between 12am to 4am on weekends in Bangkok that are fatal, categorised by accident categories.
+
+```{r}
+glimpse(accidents_thai)
+```
+
+```{r}
+accidents_thai_filtered <- accidents_thai %>%
+  filter((accident_hr %in% c(1:4)),
+         (weekday %in% c("Fri","Sat","Sun")),
+         (province_en == "Bangkok"),
+         (fatal_accident == "yes"))
+
+tmap_mode("view")
+
+tm_shape(accidents_thai_filtered) +
+  tm_dots("accident_categories")
+```
+
+# 7. Visualising Networks using tmap
+
+This section allows for users to visualise the road network across Thailand through the same variety of filters available.
+
+```{r}
+tmap_mode("view")
+
+tm_shape(thai_roads[thai_roads$tunnel == "T",]) +
+  tm_lines()
+```
+
+# 8. Parameters, Output, and Dashboard
+
+Here are the specific parameters for each dashboard under EDA, and a screenshot of their respective end results:
+
+::: panel-tabset
+## Basic Distribution
+
+| Parameters          | Description                                                                            |
+|------------------|------------------------------------------------------|
+| Province            | Select specific province to filter by, or "All" to view all the province at once.      |
+| X Variable          | The variables of the thai_accidents dataset to display the distribution by.            |
+| Proportion Variable | Variable to further segment the distribution by, "None" if want to disable proportion. |
+
+![Basic Distribution](images/basic_distribution.png)
+
+![Proportion Distribution](images/proportion.png)
+
+## Ranking
+
+| Parameters        | Description                                                        |
+|-------------------|-----------------------------------------------------|
+| Ranking Variables | Variables to rank the plot by                                      |
+| Number Slider     | To decide on the top x number of elements of a variable to display |
+
+![Ranking Plot](images/ranking.png)
+
+## Spatial Points
+
+| Parameters                 | Description                                                                                           |
+|------------------|------------------------------------------------------|
+| Province Filter            | Select specific province to filter by, or "All" to view all the province at once.                     |
+| Weather Condition Filter   | Filter dataset by whether there's a weather condition, or "Both" to include both.                     |
+| Fatal Accident Filter      | Filter dataset by whether the accident is fatal or not, or "Both" to include both.                    |
+| Days of the week Filter    | Multi-select input to filter by days of the week.                                                     |
+| Hour of Accident Filter    | Multi-select input to filter by hours of the accident.                                                |
+| Year Filter                | Slider input to filter by year range of accident.                                                     |
+| Vehicle Categories Filter  | Select specific vehicle category to filter by, or "All" to filter all the vehicle category at once.   |
+| Accident Categories Filter | Select specific accident category to filter by, or "All" to filter all the accident category at once. |
+| Road Description Filter    | Select specific road description to filter by, or "All" to filter all the road description at once.   |
+| Slope Description Filter   | Select specific slope description to filter by, or "All" to filter all the slope description at once. |
+
+![Filter for Spatial Point Map](images/sp_filter.png)
+
+![Spatial Point Map](images/sp_map.png)
+
+![Thai Accident Dataset Table](images/sp_table.png)
+
+## Road Network
+
+| Parameters      | Description                                                                                                  |
+|-----------------|-------------------------------------------------------|
+| Province Filter | Select specific province to filter by. "All" option is not available due to limitation on computation power. |
+| Bridge Filter   | Select yes or no to filter whether there's a bridge, with "All" to filter for both.                          |
+| Tunnel Filter   | Select yes or no to filter whether there's a tunnel, with "All" to filter for both.                          |
+
+![Road Network Map](images/rn_map.png)
+:::
+
+# 9. Shiny App
+
+[Link to Shiny App](https://sashimii0219.shinyapps.io/eda_shiny/)

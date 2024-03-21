@@ -4,8 +4,8 @@ format:
   html:
     code-fold: true
     code-summary: "Show code"
-execute: 
-  eval: true
+execute:
+  eval: false
   echo: true
   freeze: auto
   warning: false
@@ -105,9 +105,10 @@ glimpse(thai_roads)
 :::
 
 ```{r}
-tmap_mode("plot")
+tmap_mode("view")
 tm_shape(accidents_sf) +
   tm_dots("province_en")
+tmap_mode("plot")
 ```
 
 We can see from the map plot that there are points outside of Thailand, something we would like to exclude. We can do so by using *`st_intersection()`* function on accidents_sf using the thai_boundary.
@@ -279,15 +280,36 @@ thai_roads[rowSums(is.na(thai_roads))!=0,]
 
 No missing data as well.
 
-# 6. Writing to RDS
+# 6. Adding new variables
+
+## 6.1 Loading layers dataset
 
 ```{r}
+thai_layer <- st_read(dsn = "data/thai_adm_boundary", 
+                 layer = "tha_admbnda_adm1_rtsd_20220121") %>%
+                st_transform(crs = 4239) %>%
+                select(3) %>% rename(Province = ADM1_EN)
+```
+
+## 6.2 Appending the layer
+
+```{r}
+road_province <- st_join(thai_roads,thai_layer) %>%
+  .[st_geometry_type(.) %in% c("LINESTRING", "MULTILINESTRING"),]
+
+road_province
+```
+
+# 7. Writing to RDS
+
+```{r}
+#|eval: false
 write_rds(accidents_thai_sf_clean,
           "data/rds/accidents_thai.rds")
 
 write_rds(thai_boundary,
           "data/rds/thai_boundary.rds")
 
-write_rds(thai_roads,
+write_rds(road_province,
           "data/rds/thai_roads.rds")
 ```
