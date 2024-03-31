@@ -64,7 +64,7 @@ We use ADM0_EN dataset as it is the boundary of the whole of Thailand.
 
 ```{r}
 thai_boundary <- st_read(dsn = "data/thai_adm_boundary", 
-                 layer = "tha_admbnda_adm0_rtsd_20220121") %>%
+                 layer = "tha_admbnda_adm1_rtsd_20220121") %>%
                 st_transform(crs = 4239) %>%
                 dplyr::select("ADM0_EN")
 ```
@@ -74,6 +74,7 @@ thai_boundary <- st_read(dsn = "data/thai_adm_boundary",
 ```{r}
 thai_roads <- st_read(dsn = "data/thai_road_osm", 
               layer = "gis_osm_roads_free_1") %>%
+              filter(fclass %in% c("motorway","primary","secondary","tertiary")) %>% 
               st_transform(crs = 4239) %>%
               dplyr::select(-ref,-name)
 ```
