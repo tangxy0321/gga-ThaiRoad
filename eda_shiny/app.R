@@ -3,17 +3,17 @@ pacman::p_load(tidyr, sf, dplyr, tmap, ggplot2, readr,
 
 accidents_thai <- read_rds("data/rds/accidents_thai.rds")
 
-# thai_roads <- read_rds("data/rds/thai_roads.rds")
+thai_roads <- read_rds("data/rds/thai_roads.rds")
 
 accidents_col <- c(
-  "Province", "Weather Condition", "Road Description",
+  "District", "Weather Condition", "Road Description",
   "Slope Description", "Accident Categories", "Vehicle Categories",
   "Fatal Accident", "Year", "Day of Week", "Hour of Accident"
 )
 
 convert_variables <- function(x){
   return (case_when(
-    x == "Province" ~ "province_en",
+    x == "District" ~ "district",
     x == "Weather Condition" ~ "weather_condition",
     x == "Road Description" ~ "road_description",
     x == "Slope Description" ~ "slope_description",
@@ -56,16 +56,16 @@ ui <- dashboardPage(
               fluidRow(
                 # Filters for Basic Distribution Tab
                 column(4, selectInput(
-                            inputId = "province_x",
-                            label = "Province",
-                            choices = c("All", unique(accidents_thai$province_en)), 
+                            inputId = "district_x",
+                            label = "District",
+                            choices = c("All", sort(unique(accidents_thai$district))), 
                             selected = "All",
                             multiple = FALSE)),
                 column(4, selectInput(
                             inputId = "basic_x",
                             label = "X Variable", 
                             choices = accidents_col, 
-                            selected = "Province")),
+                            selected = "District")),
                 column(4, selectInput("basic_proportion", "Proportion Variable", 
                                       choices = c("None",accidents_col[2:10]),
                                       selected = "None"))
@@ -76,7 +76,6 @@ ui <- dashboardPage(
       
       # Ranking Tab
       tabItem(tabName = "ranking",
-              p("This dashboard takes a moment to load... please be patient!"),
               fluidRow(
                 # Filters for Ranking Tab
                 column(3, selectInput("filter_by", "Rank By", choices = accidents_col)),
@@ -89,8 +88,8 @@ ui <- dashboardPage(
       tabItem(tabName = "spatial_points",
               fluidRow(
                 # Filters for Spatial Points Tab - Accident Related Filters
-                column(4, selectInput("province_sp", "Province", 
-                                      choices = c("All", unique(accidents_thai$province_en)),
+                column(4, selectInput("district_sp", "District", 
+                                      choices = c("All", sort(unique(accidents_thai$district))),
                                       selected = "All")
                 ),
                 column(4, selectInput("weather_sp", "Weather Condition", 
@@ -150,24 +149,22 @@ ui <- dashboardPage(
       
       # Road Network Tab
       tabItem(tabName = "road_network",
-              p("This takes too large of a dataset to run so I disabled it, and shinyapp only allows 1GB... any solutions for this?")
-              # p("This dashboard takes a moment to load... please be patient!"),
-              # fluidRow(
-              #   # Filters for Road Network Tab
-              #   column(4, selectInput("province_rn", "Province", 
-              #                         choices = unique(thai_roads$Province),
-              #                         selected = "Bangkok")
-              #   ),
-              #   column(4, selectInput("bridge_rn", "Bridge", 
-              #                         choices = c("All", "yes", "no"),
-              #                         selected = "All")
-              #   ),
-              #   column(4, selectInput("tunnel_rn", "Tunnel", 
-              #                         choices = c("All", "yes", "no"),
-              #                         selected = "All")
-              #   )
-              # ),
-              # tmapOutput("road_network_map", height = "800px")
+              fluidRow(
+                # Filters for Road Network Tab
+                column(4, selectInput("district_rn", "District",
+                                      choices = sort(unique(thai_roads$district)),
+                                      selected = "Bangkok")
+                ),
+                column(4, selectInput("bridge_rn", "Bridge",
+                                      choices = c("All", "yes", "no"),
+                                      selected = "All")
+                ),
+                column(4, selectInput("tunnel_rn", "Tunnel",
+                                      choices = c("All", "yes", "no"),
+                                      selected = "All")
+                )
+              ),
+              tmapOutput("road_network_map", height = "800px")
       )
     )
   )
@@ -185,11 +182,11 @@ server <- function(input, output, session) {
   # })
   
   # Province filter
-  province_reactive <- reactive({
-    if (input$province_x == "All") {
-      accidents_province <- accidents_thai
+  district_reactive <- reactive({
+    if (input$district_x == "All") {
+      accidents_district <- accidents_thai
     } else {
-      accidents_province <- accidents_thai[accidents_thai$province_en == input$province_x,]
+      accidents_district <- accidents_thai[accidents_thai$district == input$district_x,]
     }
   })
   
@@ -198,7 +195,7 @@ server <- function(input, output, session) {
     
     bx_string <- convert_variables(input$basic_x)
     
-    ggplot(province_reactive(), aes_string(x=convert_variables(input$basic_x))) + 
+    ggplot(district_reactive(), aes_string(x=convert_variables(input$basic_x))) + 
       geom_bar() +
       labs(title = "Accidents Distribution",
            x = input$basic_x,
@@ -212,7 +209,7 @@ server <- function(input, output, session) {
   proportion_plot <- reactive({
     pct_string <- "proportion"
     
-    abs_plot <- ggplot(province_reactive(), 
+    abs_plot <- ggplot(district_reactive(), 
                        aes_string(x = convert_variables(input$basic_x), 
                                                   fill = convert_variables(input$basic_proportion))) + 
       geom_bar() +
@@ -222,7 +219,7 @@ server <- function(input, output, session) {
       theme(title=element_text(size=20, face="bold"),
         axis.title=element_text(size=20))
   
-    prop_plot <- province_reactive() %>%
+    prop_plot <- district_reactive() %>%
       group_by_(convert_variables(input$basic_x), convert_variables(input$basic_proportion)) %>%
       summarise(n = n()) %>%
       mutate(proportion = prop.table(n) * 100) %>%
@@ -278,7 +275,7 @@ server <- function(input, output, session) {
     pull(1)})
   
   output$ranking_plot <- renderPlotly({
-    ggplot(accidents_thai[(accidents_thai[,convert_variables(input$filter_by)] %>% 
+    ggplot(accidents_thai[(accidents_thai[,convert_variables(input$filter_by)] %>%
                              pull(1)) %in% accidents_topx(),],
            aes_string(x=convert_variables(input$filter_by))) + geom_bar() +
       theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
@@ -288,11 +285,11 @@ server <- function(input, output, session) {
   })
   
   # Server logic for Spatial Points Tab
-  
+    
   # Filter dataset to fit the map
   map_df_reactive <- reactive({
     # Setting up filters default
-    province_filter <- TRUE
+    district_filter <- TRUE
     weather_filter <- TRUE
     fatal_filter <- TRUE
     
@@ -304,8 +301,8 @@ server <- function(input, output, session) {
     slope_filter <- TRUE
     
     # Setting up filters conditions
-    if (input$province_sp != "All"){
-      province_filter <- accidents_thai$province_en %in% input$province_sp
+    if (input$district_sp != "All"){
+      district_filter <- accidents_thai$district %in% input$district_sp
     }
     
     if (input$weather_sp != "Both"){
@@ -339,7 +336,7 @@ server <- function(input, output, session) {
     hour_filter <- accidents_thai$accident_hr %in% input$hour_sp
     
     # Filtering dataset
-    accidents_thai[province_filter & weather_filter & fatal_filter &
+    accidents_thai[district_filter & weather_filter & fatal_filter &
                    year_filter & days_filter & hour_filter &
                     vehicle_filter & accident_cause_filter &
                      road_desc_filter & slope_filter,]
@@ -367,42 +364,42 @@ server <- function(input, output, session) {
     }
   })
   
-  # # Server logic for Road Network Tab
-  # 
-  # # Filter Road Networks
-  # rn_df_reactive <- reactive({
-  #   # Setting up filters default
-  #   bridge_filter <- TRUE
-  #   tunnel_filter <- TRUE
-  #   
-  #   # Setting up filters conditions
-  #   province_rn_filter <- thai_roads$Province %in% input$province_rn
-  #   
-  #   if (input$bridge_rn != "All"){
-  #     bridge_filter <- thai_roads$bridge %in% 
-  #       case_when(
-  #         input$bridge_rn == "yes" ~ "T",
-  #         input$bridge_rn == "no" ~ "F")
-  #   }
-  #   
-  #   if (input$tunnel_rn != "All"){
-  #     tunnel_filter <- thai_roads$tunnel %in% 
-  #       case_when(
-  #         input$tunnel_rn == "yes" ~ "T",
-  #         input$tunnel_rn == "no" ~ "F")
-  #   }
-  #   
-  #   # Filtering road network
-  #   thai_roads[province_rn_filter & bridge_filter & tunnel_filter,]
-  # })
-  # 
-  # # Rendering the map based on filtered road network
-  # output$road_network_map <- renderTmap({
-  #   tmap_mode("view")
-  #   
-  #   tm_shape(rn_df_reactive()) +
-  #       tm_lines()
-  # })
+  # Server logic for Road Network Tab
+
+  # Filter Road Networks
+  rn_df_reactive <- reactive({
+    # Setting up filters default
+    bridge_filter <- TRUE
+    tunnel_filter <- TRUE
+
+    # Setting up filters conditions
+    district_rn_filter <- thai_roads$district %in% input$district_rn
+
+    if (input$bridge_rn != "All"){
+      bridge_filter <- thai_roads$bridge %in%
+        case_when(
+          input$bridge_rn == "yes" ~ "T",
+          input$bridge_rn == "no" ~ "F")
+    }
+
+    if (input$tunnel_rn != "All"){
+      tunnel_filter <- thai_roads$tunnel %in%
+        case_when(
+          input$tunnel_rn == "yes" ~ "T",
+          input$tunnel_rn == "no" ~ "F")
+    }
+
+    # Filtering road network
+    thai_roads[district_rn_filter & bridge_filter & tunnel_filter,]
+  })
+
+  # Rendering the map based on filtered road network
+  output$road_network_map <- renderTmap({
+    tmap_mode("view")
+
+    tm_shape(rn_df_reactive()) +
+        tm_lines()
+  })
 }
 
 # Run the application

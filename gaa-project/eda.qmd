@@ -1,4 +1,5 @@
 ---
+ujhn---
 title: "Exploratory Data Analysis"
 format: 
   html:
@@ -182,7 +183,7 @@ Here are the specific parameters for each dashboard under EDA, and a screenshot 
 ## Basic Distribution
 
 | Parameters          | Description                                                                            |
-|------------------|------------------------------------------------------|
+|-----------------|-------------------------------------------------------|
 | Province            | Select specific province to filter by, or "All" to view all the province at once.      |
 | X Variable          | The variables of the thai_accidents dataset to display the distribution by.            |
 | Proportion Variable | Variable to further segment the distribution by, "None" if want to disable proportion. |
@@ -194,7 +195,7 @@ Here are the specific parameters for each dashboard under EDA, and a screenshot 
 ## Ranking
 
 | Parameters        | Description                                                        |
-|-------------------|-----------------------------------------------------|
+|------------------|------------------------------------------------------|
 | Ranking Variables | Variables to rank the plot by                                      |
 | Number Slider     | To decide on the top x number of elements of a variable to display |
 
@@ -203,7 +204,7 @@ Here are the specific parameters for each dashboard under EDA, and a screenshot 
 ## Spatial Points
 
 | Parameters                 | Description                                                                                           |
-|------------------|------------------------------------------------------|
+|-----------------|------------------------------------------------------|
 | Province Filter            | Select specific province to filter by, or "All" to view all the province at once.                     |
 | Weather Condition Filter   | Filter dataset by whether there's a weather condition, or "Both" to include both.                     |
 | Fatal Accident Filter      | Filter dataset by whether the accident is fatal or not, or "Both" to include both.                    |
@@ -224,7 +225,7 @@ Here are the specific parameters for each dashboard under EDA, and a screenshot 
 ## Road Network
 
 | Parameters      | Description                                                                                                  |
-|-----------------|-------------------------------------------------------|
+|---------------|---------------------------------------------------------|
 | Province Filter | Select specific province to filter by. "All" option is not available due to limitation on computation power. |
 | Bridge Filter   | Select yes or no to filter whether there's a bridge, with "All" to filter for both.                          |
 | Tunnel Filter   | Select yes or no to filter whether there's a tunnel, with "All" to filter for both.                          |

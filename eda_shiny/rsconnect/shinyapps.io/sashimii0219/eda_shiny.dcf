@@ -5,7 +5,7 @@ account: sashimii0219
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 11559319
-bundleId: 8402832
+bundleId: 8437761
 url: https://sashimii0219.shinyapps.io/eda_shiny/
 version: 1
 asMultiple: FALSE

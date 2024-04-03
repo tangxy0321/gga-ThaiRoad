@@ -15,8 +15,13 @@ date: "`r Sys.Date()`"
 The recorded minutes of meetings are as follows:
 
 | Number | Description                                                                                                                 | Date               |
-|--------|-----------------------------------------------------------------------------------------------------------------------------|--------------------|
+|-----------|--------------------------------------------------|----------------|
 | 1      | [Theme of Project](https://docs.google.com/document/d/1mZ8VsOVvuFI5gVwflDoGvT4iknGr8yUnMEa1mCOk6tA/edit?usp=drive_link)     | 7th February 2024  |
 | 2      | [Skeleton of Project](https://docs.google.com/document/d/1wcgXVCD8Jd5E70a8Ztd0XjYIfvJZlM0HRuX-A866AOw/edit?usp=drive_link)  | 21st February 2024 |
 | 3      | [Project Submission](https://docs.google.com/document/d/1kIEkDH_2VV-teD72ZsMtwb2r3OHi529d98rdusURfAw/edit?usp=drive_link)   | 28th February 2024 |
 | 4      | [Take-Home Exercise 3](https://docs.google.com/document/d/1hIPTK_G4usFJmROO-ISkah9vZQ_4Q86nddeToGjm22g/edit?usp=drive_link) | 13th March 2024    |
+| 5      |                                                                                                                             | 20th March 2024    |
+| 6      |                                                                                                                             | 27th March 2024    |
+| 7      |                                                                                                                             | 31st March 2024    |
+| 8      |                                                                                                                             | 3rd April 2024     |
+| 9      |                                                                                                                             | 7th April 2024     |
