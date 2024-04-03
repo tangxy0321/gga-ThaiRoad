@@ -54,8 +54,8 @@ We will then convert the dataframe to SF dataframe, with the EPSG code 4239 for 
 ```{r}
 accidents_sf <- st_as_sf(accidents, 
                        coords = c("longitude", "latitude"),
-                       crs=4326) %>%
-  st_transform(crs = 4239)
+                       crs=4239) %>%
+  st_transform(crs = 32648)
 ```
 
 ## Boundary of Thailand
@@ -65,7 +65,7 @@ We use ADM0_EN dataset as it is the boundary of the whole of Thailand.
 ```{r}
 thai_boundary <- st_read(dsn = "./data/thai_adm_boundary", 
                  layer = "tha_admbnda_adm2_rtsd_20220121") %>%
-                st_transform(crs = 4239) %>% 
+                st_transform(crs = 32648) %>% 
                 filter(ADM1_EN == "Bangkok") 
 thai_boundary
 ```
@@ -76,7 +76,7 @@ thai_boundary
 thai_roads <- st_read(dsn = "./data/thai_road_osm", 
               layer = "gis_osm_roads_free_1") %>%
               filter(fclass %in% c("motorway","primary","secondary","tertiary")) %>% 
-              st_transform(crs = 4239) %>%
+              st_transform(crs = 32648) %>%
               dplyr::select(-ref,-name)
 ```
 :::
@@ -117,6 +117,10 @@ We can use *`st_intersection()`* function on accidents_sf using the thai_boundar
 
 ```{r}
 accidents_thai_sf <- st_intersection(accidents_sf, thai_boundary)
+```
+
+```{r}
+accidents_thai_sf
 ```
 
 # 4. Simplifying Variables
@@ -295,7 +299,7 @@ No missing data as well.
 ```{r}
 thai_layer <- st_read(dsn = "./data/thai_adm_boundary", 
                  layer = "tha_admbnda_adm2_rtsd_20220121") %>%
-                st_transform(crs = 4239) %>%
+                st_transform(crs = 32648) %>%
                 filter(ADM1_EN == "Bangkok") 
 ```
 
@@ -325,4 +329,8 @@ write_rds(thai_boundary,
 
 write_rds(road_province,
           "./data/rds/thai_roads.rds")
+```
+
+```{r}
+read_rds("./data/rds/accidents_thai.rds")
 ```
