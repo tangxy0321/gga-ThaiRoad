@@ -2,8 +2,8 @@
 title: "Project Proposal"
 format: html
 author:   
-  - Tang Xin Yi 
   - Tan Jun Sheng Jackson
+  - Tang Xin Yi 
   - Teo Ying Shi
 ---
 
