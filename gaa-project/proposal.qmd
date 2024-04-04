@@ -249,11 +249,18 @@ variable to select for G/F/K/L Functions.
 
 ![](images/storyboard2.png)
 
-## **8. Timeline**
+## 8. Assignment of Work
+
+| Tan                       | Tang Xin Yi                                            | Teo Ying Shi                        |
+|---------------------------|--------------------------------------------------------|-------------------------------------|
+| Exploratory Data Analysis | Network-constrained Kernel Density Estimation          | 1st-order Kernel Density Estimation |
+| Data Preparation          | Temporal Network-constrained Kernel Density Estimation | 2nd-order Kernel Density Estimation |
+
+## **9. Timeline**
 
 ![](img/Project-timeline.png)
 
-## **9. References**
+## **10. References**
 
 Ang, J. Y., Chong, S., & Tan, Y. L. (2019, April 15). Signal Research Paper. SMU Wikipedia. https://wiki.smu.edu.sg/1819t2is415/Signal_Research_Paper
 
