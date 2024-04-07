@@ -1,10 +1,10 @@
-pacman::p_load(tidyr, sf, dplyr, tmap, ggplot2, readr,
+pacman::p_load(tidyverse, sf, tmap,
                shiny, shinydashboard, shinyWidgets, plotly,
                shinyjs, raster, shinycssloaders, shinyBS, spatstat,
                bslib, viridis, classInt, spNetwork, tmaptools)
 
 accidents_thai <- read_rds("data/rds/accidents_thai.rds")
-thai_roadss <- read_rds("data/rds/thai_roads.rds")
+thai_roads <- read_rds("data/rds/thai_roads.rds")
 bangkok_districts_sf <- read_rds("data/rds/thai_boundary.rds")
 
 accidents_col <- c(
@@ -31,7 +31,8 @@ convert_variables <- function(x){
 }
 
 ui <- dashboardPage(
-  dashboardHeader(title = "Thailand Road Accidents Dashboard"),
+  skin = "black",
+  dashboardHeader(title = "Thailand Road Accidents Dashboard", titleWidth = 400),
   dashboardSidebar(
     sidebarMenu(
       menuItem("Home", tabName = "home", icon = icon("house")),
@@ -56,7 +57,90 @@ ui <- dashboardPage(
   dashboardBody(
     tabItems(
       tabItem(tabName = "home",
-              p("This is the home page")),
+              fluidRow(
+                box(
+                  title = "Welcome to the Thailand Road Accident Geospatial Analysis App!",
+                  status = "primary",
+                  solidHeader = TRUE,
+                  collapsible = FALSE,
+                  width = 12,
+                  HTML("Our app delves into the critical issue of road accidents in Thailand, particularly 
+                       focusing on <b>Bangkok, the bustling metropolitan city notorious for its high accident 
+                       rates.</b> Despite progress, Thailand still lags behind in road safety compared to 
+                       countries like Singapore. To understand this stark contrast, we've embarked on a 
+                       comprehensive geospatial analysis.<br>"),
+                  
+                  img(src = "https://scandasia.com/wp-content/uploads/2021/03/dreamstime_s_13572763-3.jpg", width = "100%"),
+                  HTML("<b>Image:</b> Common traffic scenario in Thailand")
+                ),
+                
+                # Overview section
+                box(
+                  title = "Overview:",
+                  status = "info",
+                  solidHeader = TRUE,
+                  collapsible = TRUE,
+                  width = 12,
+                  HTML("Our app delves into the critical issue of road accidents in Thailand, particularly focusing on <b>Bangkok, the bustling metropolitan city notorious for its high accident rates.</b> Despite progress, Thailand still lags behind in road safety compared to countries like Singapore. To understand this stark contrast, we've embarked on a comprehensive geospatial analysis.")
+                ),
+                
+                # Motivation section
+                box(
+                  title = "Motivation:",
+                  status = "info",
+                  solidHeader = TRUE,
+                  collapsible = TRUE,
+                  width = 12,
+                  HTML("The glaring gap in road safety metrics between Thailand and Singapore inspired our team to create this tool. While the data is available online, navigating and analyzing it requires technical expertise. Our goal is to <b>democratize data analysis by offering a user-friendly platform accessible to all, regardless of coding proficiency.</b>")
+                ),
+                
+                # Key Features section
+                box(
+                  title = "Key Features:",
+                  status = "info",
+                  solidHeader = TRUE,
+                  collapsible = TRUE,
+                  width = 12,
+                  HTML("• <b>Exploratory Data Analysis:</b> Gain insights into Thailand's road accident dataset and 
+                    road network through various visualizations.<br>"),
+                  HTML("• <b>Spatial Point Kernel Density Estimation:</b> Assess spatial distribution, clustering, and 
+                  ordering patterns of accidents through visualizing areas with high concentrations of accidents 
+                    within Bangkok.<br>"),
+                  HTML("• <b>Network-Constrained Analysis:</b> Analyze accident distribution taking into 
+                    consideration road networks."),
+                ),
+                
+                # Future Prospects section
+                box(
+                  title = "Future Prospects:",
+                  status = "info",
+                  solidHeader = TRUE,
+                  collapsible = TRUE,
+                  width = 12,
+                  HTML("As computational limitations confine us to district-level analysis, our vision extends 
+                    to <b>encompassing the entirety of Thailand</b>. We also aim to <b>enhance analysis performance 
+                    through better computational resources</b>, ultimately advancing data democratization.")
+                ),
+                
+                # Call to Action section
+                box(
+                  title = "Ending Note:",
+                  status = "info",
+                  solidHeader = TRUE,
+                  collapsible = TRUE,
+                  width = 12,
+                  HTML("By leveraging geospatial insights, you can identify problem areas, devise targeted 
+                    interventions, and contribute to a safer driving environment. Let's work together towards 
+                    reducing road accidents and saving lives in Thailand.<br><br>
+                    
+                    Start exploring now and join us in 
+                    <b>Making Thai Roads Safer!!</b><br><br>
+                       
+                    This app was developed by <b>Xin Yi, Ying Shi, and Jackson</b>")
+                ),
+              )
+            ),
+      
       # Basic Distribution Tab
       tabItem(tabName = "basic_distribution",
               fluidRow(
@@ -161,7 +245,7 @@ ui <- dashboardPage(
               fluidRow(
                 # Filters for Road Network Tab
                 column(4, selectInput("district_rn", "District",
-                                      choices = sort(unique(thai_roadss$district)),
+                                      choices = sort(unique(thai_roads$district)),
                                       selected = "Bangkok")
                 ),
                 column(4, selectInput("bridge_rn", "Bridge",
@@ -313,7 +397,7 @@ ui <- dashboardPage(
                       tmapOutput("ndke_tmap_plot")),
                   box(width = 4, title = "Interpretation",
                       p("The colour intensity of the road segment increases as the number of accident happened on the road segment increases"),
-                      p("The error message 'argument is of length zero' indicates that from "))
+                      p("The error message 'argument is of length zero' indicates that no recorded road accident occurred in the selected district of Bangkok."))
                 )
               )
       ),
@@ -553,24 +637,24 @@ server <- function(input, output, session) {
     tunnel_filter <- TRUE
 
     # Setting up filters conditions
-    district_rn_filter <- thai_roadss$district %in% input$district_rn
+    district_rn_filter <- thai_roads$district %in% input$district_rn
 
     if (input$bridge_rn != "All"){
-      bridge_filter <- thai_roadss$bridge %in%
+      bridge_filter <- thai_roads$bridge %in%
         case_when(
           input$bridge_rn == "yes" ~ "T",
           input$bridge_rn == "no" ~ "F")
     }
 
     if (input$tunnel_rn != "All"){
-      tunnel_filter <- thai_roadss$tunnel %in%
+      tunnel_filter <- thai_roads$tunnel %in%
         case_when(
           input$tunnel_rn == "yes" ~ "T",
           input$tunnel_rn == "no" ~ "F")
     }
 
     # Filtering road network
-    thai_roadss[district_rn_filter & bridge_filter & tunnel_filter,]
+    thai_roads[district_rn_filter & bridge_filter & tunnel_filter,]
   })
 
   # Rendering the map based on filtered road network
@@ -582,42 +666,105 @@ server <- function(input, output, session) {
   })
   
   # Server logic for 1st order spatial point pattern analysis (default view) -----------------------------------------------------------------
-  default_district_owin <- as.owin(bangkok_districts_sf)
-  bangkok_accidents_ppp <- as.ppp(accidents_thai)
-  default_accidents_ppp_jit <- rjitter(bangkok_accidents_ppp,
-                                       retry=TRUE,
-                                       nsim=1,
-                                       drop=TRUE)
-  
-  default_district_accidents_ppp <- default_accidents_ppp_jit[default_district_owin]
-  default_district_accidents_ppp_km <- rescale(default_district_accidents_ppp, 1000, "km")
-  default_district_kde <- adaptive.density(default_district_accidents_ppp_km, method="kernel")
-  
-  default_raster_kde_auto_diggle <- raster(default_district_kde)
-  projection(default_raster_kde_auto_diggle) <- CRS("+init=EPSG:32648 +units=km")
-  
-  output$mapPlot <- renderTmap({
-    tm_basemap(server = "OpenStreetMap.DE") +
-      tm_basemap(server = "Esri.WorldImagery") +
-      tm_shape(default_raster_kde_auto_diggle) +
-      tm_raster("layer",
-                n = 7,
-                title = "v",
-                style = "pretty",
-                alpha = 0.6,
-                palette = c("#fafac3","#fd953b","#f02a75","#b62385","#021c9e")) +
-      tm_shape(bangkok_districts_sf) +
-      tm_polygons(alpha=0.1,id="ADM2_EN") +
-      tm_view(set.zoom.limits = c(10, 15)) +
-      tmap_options(check.and.fix = TRUE)
+  observeEvent(input$SPPA_Run_KDE, {
+    districts_input <- input$sppa_kde_bk_districts
+    year_input <- input$sppa_kde_year
+    accident_type_input <- input$sppa_kde_accident_type
+    vehicle_type_input <- input$sppa_kde_vehicle_type
+    nsim_input <- input$sppa_kde_nearest_neighbor_nsim
+    print(year_input)
+    print(accident_type_input)
+    print(vehicle_type_input)
+    print(nsim_input)
+    
+    # if districts_input does not equal to "All", filter bangkok_extracted_sf
+    if ( districts_input != "All" ) {
+      bangkok_districts_sf <- bangkok_districts_sf %>%
+        filter(ADM2_EN == districts_input)
+    }
+    # str(bangkok_extracted_sf)
+    
+    # If year_input is not "All", filter by year
+    if (year_input != "All") {
+      accidents_thai <- accidents_thai %>%
+        filter(year == year_input)
+    }
+    
+    # If accident_type_input is not "All", filter by accident_categories
+    if (accident_type_input != "All") {
+      accidents_thai <- accidents_thai %>%
+        filter(accident_categories == accident_type_input)
+    }
+    
+    # If vehicle_type_input is not "All", filter by vehicle_categories
+    if (vehicle_type_input != "All") {
+      accidents_thai <- accidents_thai %>%
+        filter(vehicle_categories == vehicle_type_input)
+    }
+    
+    
+    district_owin <- as.owin(bangkok_districts_sf)
+    district_ppp <- as.ppp(accidents_thai)
+    district_ppp_jit <- rjitter(district_ppp,
+                                retry=TRUE,
+                                nsim=1,
+                                drop=TRUE)
+    
+    district_accidents_ppp <- district_ppp_jit[district_owin]
+    district_accidents_ppp_km <- rescale(district_accidents_ppp, 1000, "km")
+    
+    kernel_input <- input$sppa_kde_kernels
+    bandwidth_input <- input$sppa_kde_bw
+    print(kernel_input)
+    
+    if (bandwidth_input == "Automatic") {
+      auto_sigma_input <- switch(input$auto_sigma,
+                                 "bw.diggle" = bw.diggle,
+                                 "bw.CvL" = bw.CvL,
+                                 "bw.scott" = bw.scott,
+                                 "bw.ppl" = bw.ppl
+      )
+      
+      district_kde <- density(district_accidents_ppp_km,
+                              sigma=auto_sigma_input,
+                              edge=TRUE,
+                              kernel=kernel_input)
+      plot(district_kde)
+    } else if (bandwidth_input == "Fixed") {
+      fixed_sigma_input <- input$fixed_sigma
+      district_kde <- density(district_accidents_ppp_km,
+                              sigma=fixed_sigma_input,
+                              edge=TRUE,
+                              kernel=kernel_input)
+    } else {
+      district_kde <- adaptive.density(default_province_accidents_ppp_km, method="kernel")
+    }
+    
+    raster_kde_auto_diggle <- raster(district_kde)
+    projection(raster_kde_auto_diggle) <- CRS("+init=EPSG:32648 +units=km")
+    output$mapPlot <- renderTmap({
+      tm_basemap(server = "OpenStreetMap.DE") +
+        tm_basemap(server = "Esri.WorldImagery") +
+        tm_shape(raster_kde_auto_diggle) +
+        tm_raster("layer",
+                  n = 7,
+                  title = "v",
+                  style = "pretty",
+                  alpha = 0.6,
+                  palette = c("#fafac3","#fd953b","#f02a75","#b62385","#021c9e")) +
+        tm_shape(bangkok_districts_sf) +
+        tm_polygons(alpha=0.1,id="ADM2_EN") +
+        tm_view(set.zoom.limits = c(10, 15)) +
+        tmap_options(check.and.fix = TRUE)
+    })
+    
+    
+    output$clark <- renderPrint(clarkevans.test(
+      district_ppp, correction="none",
+      clipregion = NULL, alternative=c("two.sided"),
+      nsim=nsim_input
+    ))
   })
-  
-  output$clark <- renderPrint(clarkevans.test(
-    bangkok_accidents_ppp, correction="none",
-    clipregion = NULL, alternative=c("two.sided"),
-    nsim=99
-  )
-  )
   
   # Server logic for 2nd order spatial point pattern analysis (default view) -----------------------------------------------------------------
   observeEvent(input$SPPA_Run_CSR, {
@@ -789,18 +936,20 @@ server <- function(input, output, session) {
     data_filter <- accidents_thai %>%
       filter(province == "Bangkok") %>% 
       st_intersection(thai_distr_k)
-    thai_roads_distr <- st_cast(st_intersection(thai_roads, thai_distr_k),"LINESTRING")
+    thai_road_distr <- thai_roads %>% 
+      filter(district == input$district_k)
+    thai_road_distr <- st_cast(thai_road_distr, "LINESTRING")
     # stat_test
-    kfunc <- kfunctions(thai_roads_distr,data_filter,
+    kfunc <- kfunctions(thai_road_distr,data_filter,
                         start = input$func_start, end = input$func_end,
-                        step = 1, width = 50,
-                        agg = 1,
+                        step = 1, width = 100,
+                        agg = 51,
                         nsim = input$nsimulation)
-    combo <- list(g_plot = kfunc$plotg, k_plot = kfunc$plotk)
+    combo <- kfunc$plotg
     combo
   })
-  output$g_func_plot <- renderPlot({stat_plotting()$g_plot})
-  output$k_func_plot <- renderPlot({stat_plotting()$k_plot})
+  output$g_func_plot <- renderPlot({stat_plotting()})
+  # output$k_func_plot <- renderPlot({stat_plotting()[2]})
 }
 
 # Run the application

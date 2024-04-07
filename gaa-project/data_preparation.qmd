@@ -306,15 +306,15 @@ thai_layer <- st_read(dsn = "./data/thai_adm_boundary",
 ## 6.2 Appending the layer
 
 ```{r}
-road_province <- st_join(thai_roads,thai_layer) %>%
+road_province <- st_intersection(thai_roads,thai_layer) %>%
   .[st_geometry_type(.) %in% c("LINESTRING", "MULTILINESTRING"),] %>%
   filter(ADM1_EN == "Bangkok") %>%
-  select(1:8,11,28) %>%
+  dplyr::select(1:8,11,28) %>%
   rename(district = ADM2_EN)
 ```
 
 ```{r}
-glimpse(road_province)
+unique(st_geometry_type(road_province$geometry))
 ```
 
 # 7. Writing to RDS

@@ -61,16 +61,24 @@ sapply(lapply(accidents_thai_df, unique), length)
 ```
 
 ```{r}
+glimpse(accidents_thai_df)
+unique(accidents_thai_df$weather_condition)
+```
+
+```{r}
 # Logistic Regression
-glm.def1 <- glm(fatal_accident~.-province_en, data=accidents_thai_df, family=binomial)
+glm.def1 <- glm(fatal_accident~accident_hr+weekday+year+
+                  vehicle_categories+accident_categories+slope_description+
+                  road_description+weather_condition, data=accidents_thai_df, family=binomial)
 summary(glm.def1)
 ```
 
-From the model above, we can see that the more statistically significant variables are accident_categories, vehicle_categories, and weather_condition. Let's try that again with just these 3 variables.
+From the model above, we can see that the more statistically significant variables are accident_categories and vehicle_categories. Let's try that again with just these 3 variables.
 
 ```{r}
-# Logistic Regression with these 3 variables
-glm.def2 <- glm(fatal_accident~accident_categories + vehicle_categories + weather_condition, data=accidents_thai_df, family=binomial)
+# Logistic Regression with these 2 variables
+glm.def2 <- glm(fatal_accident~accident_categories + vehicle_categories,
+                data=accidents_thai_df, family=binomial)
 summary(glm.def2)
 ```
 
@@ -128,13 +136,13 @@ The next section available would allow users to visualise the different variable
 
 ```{r}
 accidents_top10 <- accidents_thai %>%
-  group_by(province_en) %>%
+  group_by(province) %>%
   summarise(total_count=n()) %>%
   top_n(10, total_count) %>%
-  .$province_en
+  .$province
 
-ggplot(accidents_thai[accidents_thai$province_en %in% accidents_top10,], 
-       aes(x=province_en)) + geom_bar() +
+ggplot(accidents_thai[accidents_thai$province %in% accidents_top10,], 
+       aes(x=province)) + geom_bar() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   labs(title = "Top 10 Provinces with most recorded accidents",
        x = "Provinces",
@@ -155,7 +163,7 @@ glimpse(accidents_thai)
 accidents_thai_filtered <- accidents_thai %>%
   filter((accident_hr %in% c(1:4)),
          (weekday %in% c("Fri","Sat","Sun")),
-         (province_en == "Bangkok"),
+         (province == "Bangkok"),
          (fatal_accident == "yes"))
 
 tmap_mode("view")
@@ -183,7 +191,7 @@ Here are the specific parameters for each dashboard under EDA, and a screenshot 
 ## Basic Distribution
 
 | Parameters          | Description                                                                            |
-|---------------------|----------------------------------------------------------------------------------------|
+|-----------------|-------------------------------------------------------|
 | Province            | Select specific province to filter by, or "All" to view all the province at once.      |
 | X Variable          | The variables of the thai_accidents dataset to display the distribution by.            |
 | Proportion Variable | Variable to further segment the distribution by, "None" if want to disable proportion. |
@@ -195,7 +203,7 @@ Here are the specific parameters for each dashboard under EDA, and a screenshot 
 ## Ranking
 
 | Parameters        | Description                                                        |
-|-------------------|--------------------------------------------------------------------|
+|------------------|------------------------------------------------------|
 | Ranking Variables | Variables to rank the plot by                                      |
 | Number Slider     | To decide on the top x number of elements of a variable to display |
 
@@ -204,7 +212,7 @@ Here are the specific parameters for each dashboard under EDA, and a screenshot 
 ## Spatial Points
 
 | Parameters                 | Description                                                                                           |
-|----------------------------|-------------------------------------------------------------------------------------------------------|
+|-----------------|------------------------------------------------------|
 | Province Filter            | Select specific province to filter by, or "All" to view all the province at once.                     |
 | Weather Condition Filter   | Filter dataset by whether there's a weather condition, or "Both" to include both.                     |
 | Fatal Accident Filter      | Filter dataset by whether the accident is fatal or not, or "Both" to include both.                    |
@@ -225,7 +233,7 @@ Here are the specific parameters for each dashboard under EDA, and a screenshot 
 ## Road Network
 
 | Parameters      | Description                                                                                                  |
-|-----------------|--------------------------------------------------------------------------------------------------------------|
+|---------------|---------------------------------------------------------|
 | Province Filter | Select specific province to filter by. "All" option is not available due to limitation on computation power. |
 | Bridge Filter   | Select yes or no to filter whether there's a bridge, with "All" to filter for both.                          |
 | Tunnel Filter   | Select yes or no to filter whether there's a tunnel, with "All" to filter for both.                          |
