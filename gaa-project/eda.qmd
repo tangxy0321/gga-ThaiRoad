@@ -1,5 +1,4 @@
 ---
-ujhn---
 title: "Exploratory Data Analysis"
 format: 
   html:
