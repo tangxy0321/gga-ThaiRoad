@@ -2,13 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.353">
+<meta name="generator" content="quarto-1.3.450">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2024-03-13">
+<meta name="dcterms.date" content="2024-04-08">
 
-<title>IS415 Group 10 - Initial Exploration of Dataset</title>
+<title>ThaiRoad - Initial Exploration of Dataset</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -90,7 +90,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
@@ -106,7 +107,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">IS415 Group 10</span>
+    <span class="navbar-title">ThaiRoad</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -136,18 +137,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../gaa-project/eda.html" rel="" target="">
  <span class="dropdown-text">Exploratory Data Analysis</span></a>
   </li>  
-        <li>
-    <a class="dropdown-item" href="../gaa-project/.html" rel="" target="">
- <span class="dropdown-text">1st Order Kernel Density Estimation Analysis</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="../gaa-project/.html" rel="" target="">
- <span class="dropdown-text">2nd Order Kernel Density Estimation Analysis</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="../gaa-project/.html" rel="" target="">
- <span class="dropdown-text">Network-constrained Spatial Point Patterns Analysis</span></a>
-  </li>  
+        <li class="dropdown-header">1st Order Kernel Density Estimation Analysis</li>
+        <li class="dropdown-header">2nd Order Kernel Density Estimation Analysis</li>
+        <li class="dropdown-header">Network-constrained Spatial Point Patterns Analysis</li>
     </ul>
   </li>
   <li class="nav-item">
@@ -199,7 +191,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">March 13, 2024</p>
+      <p class="date">April 8, 2024</p>
     </div>
   </div>
   
@@ -224,7 +216,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, tidyverse, gridExtra, tmap, maptools)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
@@ -239,7 +231,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>We will first drop the rows that have NA in lon and lat, as they will be useless for our analysis.</p>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>accidents <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/thai_road_accident_2019_2022.csv"</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>(latitude) <span class="sc">%&gt;%</span> </span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>(longitude)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -248,7 +240,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>We will then convert the dataframe to SF dataframe, with the EPSG code 4239 for Thailand.</p>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>accidents_sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(accidents, </span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"longitude"</span>, <span class="st">"latitude"</span>),</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                       <span class="at">crs=</span><span class="dv">4326</span>) <span class="sc">%&gt;%</span></span>
@@ -260,7 +252,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>We use ADM0_EN dataset as it is the boundary of the whole of Thailand.</p>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>thai_boundary <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/thai_adm_boundary"</span>, </span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">layer =</span> <span class="st">"tha_admbnda_adm0_rtsd_20220121"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">4239</span>) <span class="sc">%&gt;%</span></span>
@@ -268,7 +260,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `tha_admbnda_adm0_rtsd_20220121' from data source 
-  `/Users/jacksontan/Documents/gga-ThaiRoad/gaa-project/data/thai_adm_boundary' 
+  `C:\ys-tx\gga-ThaiRoad\gaa-project\data\thai_adm_boundary' 
   using driver `ESRI Shapefile'
 Simple feature collection with 1 feature and 13 fields
 Geometry type: MULTIPOLYGON
@@ -277,7 +269,7 @@ Bounding box:  xmin: 97.34336 ymin: 5.613038 xmax: 105.637 ymax: 20.46507
 Geodetic CRS:  WGS 84</code></pre>
 </div>
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(thai_boundary))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
@@ -302,7 +294,7 @@ Geodetic CRS:  WGS 84</code></pre>
 <p>Now let us first take a look at the points on the map.</p>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(accidents_sf) <span class="sc">+</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>(<span class="st">"province_en"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -314,7 +306,7 @@ Geodetic CRS:  WGS 84</code></pre>
 <p>We can see from the map plot that there are points outside of Thailand, something we would like to exclude. We can do so by using <em><code>st_intersection()</code></em> function on accidents_sf using the thai_boundary.</p>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>accidents_thai_sf <span class="ot">&lt;-</span> <span class="fu">st_intersection</span>(accidents_sf, thai_boundary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
@@ -323,7 +315,7 @@ Geodetic CRS:  WGS 84</code></pre>
 <p>Before we begin, we should have a look at the dataframe first.</p>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(accidents_thai_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
@@ -355,7 +347,7 @@ $ geometry                    &lt;POINT [°]&gt; POINT (100.8769 14.95746), POIN
 <p>Splitting the presumed_cause variable into 5 different categories, mainly Driver Factors, Traffic Violations, External Factors, Speeding (as it is the top leading cause of accidents), and Others.</p>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>accident_categories <span class="ot">&lt;-</span> <span class="fu">unique</span>(accidents_sf<span class="sc">$</span>presumed_cause)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>accident_categories</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -418,7 +410,7 @@ $ geometry                    &lt;POINT [°]&gt; POINT (100.8769 14.95746), POIN
 </div>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>driver_factors <span class="ot">&lt;-</span> accident_categories[<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">6</span>,<span class="dv">9</span>, <span class="dv">14</span>, <span class="dv">21</span>, <span class="dv">30</span>, <span class="dv">44</span>, <span class="dv">49</span>, <span class="dv">50</span>, <span class="dv">52</span><span class="sc">:</span><span class="dv">54</span>)]</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>traffic_violations <span class="ot">&lt;-</span> accident_categories[<span class="fu">c</span>(<span class="dv">3</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">11</span><span class="sc">:</span><span class="dv">13</span>, <span class="dv">16</span>, <span class="dv">17</span>, <span class="dv">19</span>, <span class="dv">23</span><span class="sc">:</span><span class="dv">26</span>, <span class="dv">29</span>, <span class="dv">31</span>, <span class="dv">35</span>)]</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>external_factors <span class="ot">&lt;-</span> accident_categories[<span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">15</span>, <span class="dv">18</span>, <span class="dv">20</span>, <span class="dv">22</span>, <span class="dv">27</span>, <span class="dv">28</span>, <span class="dv">32</span>, <span class="dv">33</span>, <span class="dv">34</span>, <span class="dv">36</span><span class="sc">:</span><span class="dv">38</span>, <span class="dv">39</span>, <span class="dv">40</span><span class="sc">:</span><span class="dv">43</span>, <span class="dv">45</span><span class="sc">:</span><span class="dv">48</span>, <span class="dv">51</span>)]</span>
@@ -440,7 +432,7 @@ $ geometry                    &lt;POINT [°]&gt; POINT (100.8769 14.95746), POIN
 <p>Next up we will split the vehicle_type into 4 categories, two_wheeled, four_wheeled, heavy_duty, and others.</p>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>vehicle_categories <span class="ot">&lt;-</span> <span class="fu">unique</span>(accidents_thai_sf<span class="sc">$</span>vehicle_type)</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>vehicle_categories</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -457,7 +449,7 @@ $ geometry                    &lt;POINT [°]&gt; POINT (100.8769 14.95746), POIN
 </div>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>two_wheeled <span class="ot">&lt;-</span> vehicle_categories[<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">10</span>,<span class="dv">15</span>)]</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>four_wheeled <span class="ot">&lt;-</span> vehicle_categories[<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">7</span>,<span class="dv">13</span>)]</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>heavy_duty <span class="ot">&lt;-</span> vehicle_categories[<span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">6</span>,<span class="dv">8</span>,<span class="dv">9</span>,<span class="dv">11</span>,<span class="dv">14</span>)]</span>
@@ -475,7 +467,7 @@ $ geometry                    &lt;POINT [°]&gt; POINT (100.8769 14.95746), POIN
 <p>We can also simplify the weather_condition and number_of_fatalities column to whether there is a weather condition, and if the accident is fatal.</p>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>accidents_thai_sf <span class="ot">&lt;-</span> accidents_thai_sf <span class="sc">%&gt;%</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">weather_condition =</span> <span class="fu">ifelse</span>((weather_condition <span class="sc">==</span> <span class="st">"clear"</span>), <span class="st">"no"</span>, <span class="st">"yes"</span>),</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">fatal_accident =</span> <span class="fu">ifelse</span>((number_of_fatalities <span class="sc">&gt;=</span> <span class="dv">1</span>), <span class="st">"yes"</span>, <span class="st">"no"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -487,7 +479,7 @@ $ geometry                    &lt;POINT [°]&gt; POINT (100.8769 14.95746), POIN
 <p>The exact datetime doesn’t really provide us with much details. Let us split convert the incident_datetime into datetime object, then split it into day of the week and hour of accident.</p>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>accidents_thai_sf<span class="sc">$</span>incident_datetime <span class="ot">&lt;-</span> <span class="fu">as_datetime</span>(</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  accidents_thai_sf<span class="sc">$</span>incident_datetime)</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -505,14 +497,14 @@ $ geometry                    &lt;POINT [°]&gt; POINT (100.8769 14.95746), POIN
 <p>With our necessary variables clean, let us drop the variables that we will not be using.</p>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>accidents_thai_sf_clean <span class="ot">&lt;-</span> accidents_thai_sf <span class="sc">%&gt;%</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">14</span><span class="sc">:</span><span class="dv">16</span>,<span class="dv">19</span><span class="sc">:</span><span class="dv">22</span>,<span class="dv">18</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(accidents_thai_sf_clean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
@@ -552,7 +544,7 @@ $ geometry            &lt;POINT [°]&gt; POINT (100.8769 14.95746), POINT (104.8
 <h3 class="anchored" data-anchor-id="accident-categories">4.1.1 Accident Categories</h3>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(accidents_thai_sf_clean, <span class="fu">aes</span>(<span class="at">x=</span>accident_categories)) <span class="sc">+</span> </span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Accidents by Cause Categories"</span>,</span>
@@ -568,7 +560,7 @@ $ geometry            &lt;POINT [°]&gt; POINT (100.8769 14.95746), POINT (104.8
 <h3 class="anchored" data-anchor-id="vehicle-categories-1">4.1.2 Vehicle Categories</h3>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(accidents_thai_sf_clean, <span class="fu">aes</span>(<span class="at">x=</span>vehicle_categories)) <span class="sc">+</span> </span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Accidents by Vehicle Categories"</span>,</span>
@@ -584,7 +576,7 @@ $ geometry            &lt;POINT [°]&gt; POINT (100.8769 14.95746), POINT (104.8
 <h3 class="anchored" data-anchor-id="day-of-the-week">4.1.3 Day of the Week</h3>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(accidents_thai_sf_clean, <span class="fu">aes</span>(<span class="at">x=</span>weekday)) <span class="sc">+</span> </span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Accidents by Day of the Week"</span>,</span>
@@ -600,7 +592,7 @@ $ geometry            &lt;POINT [°]&gt; POINT (100.8769 14.95746), POINT (104.8
 <h3 class="anchored" data-anchor-id="accident-hour">4.1.4 Accident Hour</h3>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(accidents_thai_sf, <span class="fu">aes</span>(<span class="at">x=</span>accident_hr)) <span class="sc">+</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Accidents by Start Hour"</span>,</span>
@@ -616,7 +608,7 @@ $ geometry            &lt;POINT [°]&gt; POINT (100.8769 14.95746), POINT (104.8
 <h3 class="anchored" data-anchor-id="fatal-accident">4.1.5 Fatal Accident?</h3>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(accidents_thai_sf_clean, <span class="fu">aes</span>(<span class="at">x =</span> fatal_accident)) <span class="sc">+</span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Fatal Accident?"</span>,</span>
@@ -635,7 +627,7 @@ $ geometry            &lt;POINT [°]&gt; POINT (100.8769 14.95746), POINT (104.8
 <h3 class="anchored" data-anchor-id="bad-weather-condition">4.1.6 Bad Weather Condition?</h3>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(accidents_thai_sf_clean, <span class="fu">aes</span>(<span class="at">x =</span> weather_condition)) <span class="sc">+</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Weather Condition"</span>,</span>
@@ -655,7 +647,7 @@ $ geometry            &lt;POINT [°]&gt; POINT (100.8769 14.95746), POINT (104.8
 <p>To find out which variable heavily influence whether an accident is fatal, we can make use of a Logistic Regression to check which one is statistically significant. We first need to create a temporary dataframe and drop the geometry, as the Logistic Regression model can’t take in geometry values.</p>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>accidents_thai_df <span class="ot">&lt;-</span> <span class="fu">st_drop_geometry</span>(accidents_thai_sf_clean) <span class="sc">%&gt;%</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character), as.factor))</span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -670,7 +662,7 @@ accident_categories  vehicle_categories      fatal_accident             weekday
 </div>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Logistic Regression</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>glm.def1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(fatal_accident<span class="sc">~</span>.<span class="sc">-</span>province_en, <span class="at">data=</span>accidents_thai_df, <span class="at">family=</span>binomial)</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(glm.def1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -683,26 +675,26 @@ glm(formula = fatal_accident ~ . - province_en, family = binomial,
 
 Coefficients:
                                                        Estimate Std. Error
-(Intercept)                                          -13.605537 135.897115
+(Intercept)                                          -13.605537 135.897116
 weather_conditionyes                                  -0.112968   0.035435
-road_descriptionconnecting to private area            11.590471 135.897042
-road_descriptionconnecting to public/commercial area  11.177053 135.897022
-road_descriptionconnecting to school area             10.880889 135.897239
-road_descriptionfour-way intersection                 11.363376 135.897063
-road_descriptiongrade-separated intersection/ramps    10.054161 135.897701
-road_descriptionlane-changing area                    10.544303 135.901700
-road_descriptionmerge lane                             1.879734 167.455811
-road_descriptionmotorcycle lane                       -0.754759 352.031905
-road_descriptionother                                 10.873442 135.897003
-road_descriptionpedestrian path                        0.865076 352.031907
-road_descriptionroundabout                            11.340871 135.898927
-road_descriptionsharp curve                           11.268776 135.897169
-road_descriptionstraight road                         11.196324 135.897111
-road_descriptiont-intersection                        11.318749 135.897047
-road_descriptionu-turn area                           10.223422 135.901539
-road_descriptionwide curve                            11.291435 135.897114
-road_descriptiony-intersection                        11.017425 135.897154
-road_descriptionzebra crossing/pedestrian crossing     0.876408 352.031907
+road_descriptionconnecting to private area            11.590471 135.897044
+road_descriptionconnecting to public/commercial area  11.177053 135.897023
+road_descriptionconnecting to school area             10.880889 135.897240
+road_descriptionfour-way intersection                 11.363376 135.897065
+road_descriptiongrade-separated intersection/ramps    10.054161 135.897703
+road_descriptionlane-changing area                    10.544303 135.901702
+road_descriptionmerge lane                             1.879734 167.455812
+road_descriptionmotorcycle lane                       -0.754759 352.031906
+road_descriptionother                                 10.873442 135.897004
+road_descriptionpedestrian path                        0.865076 352.031908
+road_descriptionroundabout                            11.340871 135.898928
+road_descriptionsharp curve                           11.268776 135.897171
+road_descriptionstraight road                         11.196324 135.897113
+road_descriptiont-intersection                        11.318749 135.897049
+road_descriptionu-turn area                           10.223422 135.901540
+road_descriptionwide curve                            11.291435 135.897115
+road_descriptiony-intersection                        11.017425 135.897156
+road_descriptionzebra crossing/pedestrian crossing     0.876408 352.031908
 slope_descriptionother                                 0.196164   0.175868
 slope_descriptionslope area                           -0.056828   0.058558
 accident_categoriesexternal_factors                   -0.409741   0.072614
@@ -769,7 +761,7 @@ Number of Fisher Scoring iterations: 11</code></pre>
 <p>From the model above, we can see that the more statistically significant variables are accident_categories, vehicle_categories, and weather_condition. Let’s try that again with just these 3 variables.</p>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Logistic Regression with these 3 variables</span></span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>glm.def2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(fatal_accident<span class="sc">~</span>accident_categories <span class="sc">+</span> vehicle_categories <span class="sc">+</span> weather_condition, <span class="at">data=</span>accidents_thai_df, <span class="at">family=</span>binomial)</span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(glm.def2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -811,7 +803,7 @@ Number of Fisher Scoring iterations: 5</code></pre>
 <h4 class="anchored" data-anchor-id="weather">4.2.2.1 Weather</h4>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>abs_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(accidents_thai_sf_clean, <span class="fu">aes</span>(<span class="at">x =</span> weather_condition, <span class="at">fill =</span> fatal_accident)) <span class="sc">+</span> </span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Number of Fatal Accidents caused by Weather Condition"</span>,</span>
@@ -845,7 +837,7 @@ Number of Fisher Scoring iterations: 5</code></pre>
 <p>What about vehicle categories?</p>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>abs_plot2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(accidents_thai_sf_clean, <span class="fu">aes</span>(<span class="at">x =</span> vehicle_categories, <span class="at">fill =</span> fatal_accident)) <span class="sc">+</span> </span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Number of Fatal Accidents by Vehicle Categories"</span>,</span>
@@ -879,7 +871,7 @@ Number of Fisher Scoring iterations: 5</code></pre>
 <p>Does the cause of accident influence the outcome of it?</p>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>abs_plot3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(accidents_thai_sf_clean, <span class="fu">aes</span>(<span class="at">x =</span> accident_categories, <span class="at">fill =</span> fatal_accident)) <span class="sc">+</span> </span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Number of Fatal Accidents by Accident Categories"</span>,</span>
@@ -918,7 +910,7 @@ Number of Fisher Scoring iterations: 5</code></pre>
 <p>Having looked at the cause and effect, let us take a closer look at how it differs when we zoom in to specific provinces. We will first look at the top 10 province that has the highest number of accidents.</p>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>accidents_top10 <span class="ot">&lt;-</span> accidents_thai_sf_clean <span class="sc">%&gt;%</span></span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(province_en) <span class="sc">%&gt;%</span></span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">total_count=</span><span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
@@ -934,7 +926,7 @@ Number of Fisher Scoring iterations: 5</code></pre>
 [10] "Tak"              </code></pre>
 </div>
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(accidents_thai_sf_clean[accidents_thai_sf_clean<span class="sc">$</span>province_en <span class="sc">%in%</span> accidents_top10,], </span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x=</span>province_en)) <span class="sc">+</span> <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">hjust=</span><span class="dv">1</span>)) <span class="sc">+</span></span>
@@ -953,7 +945,7 @@ Number of Fisher Scoring iterations: 5</code></pre>
 <p>Let’s filter our data to only show records in Bangkok</p>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>accidents_bkk_sf_clean <span class="ot">&lt;-</span> accidents_thai_sf_clean[accidents_thai_sf_clean<span class="sc">$</span>province_en <span class="sc">==</span> <span class="st">"Bangkok"</span>,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
@@ -961,7 +953,7 @@ Number of Fisher Scoring iterations: 5</code></pre>
 <h4 class="anchored" data-anchor-id="leading-cause-of-accident">4.3.2.1 Leading cause of accident</h4>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(accidents_bkk_sf_clean, </span>
 <span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x=</span>accident_categories)) <span class="sc">+</span> <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
 <span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">hjust=</span><span class="dv">1</span>)) <span class="sc">+</span></span>
@@ -976,7 +968,7 @@ Number of Fisher Scoring iterations: 5</code></pre>
 <p>Speeding is the leading cause of accidents in Bangkok too.</p>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>accidents_bkk_sf_clean</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
@@ -1026,7 +1018,7 @@ First 10 features:
 <h4 class="anchored" data-anchor-id="accident-fatality-rate">4.3.2.2 Accident fatality rate</h4>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(accidents_bkk_sf_clean, <span class="fu">aes</span>(<span class="at">x =</span> fatal_accident)) <span class="sc">+</span></span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
 <span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Fatal Accident?"</span>,</span>
@@ -1054,7 +1046,7 @@ First 10 features:
 <p>There are points with unknown province well within the boundary of Thailand.</p>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>unknown <span class="ot">&lt;-</span> accidents_thai_sf_clean <span class="sc">%&gt;%</span> <span class="fu">filter</span>(province_en <span class="sc">==</span> <span class="st">"unknown"</span>)</span>
 <span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>unknown</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -1103,7 +1095,7 @@ First 10 features:
 <p>By extracting them out we can see that there are 17 points</p>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span>
 <span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(unknown) <span class="sc">+</span></span>
 <span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>(<span class="st">"province_en"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1115,7 +1107,7 @@ First 10 features:
 <p>Loading the provinces</p>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>thai_provinces <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/thai_adm_boundary"</span>, </span>
 <span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">layer =</span> <span class="st">"tha_admbnda_adm1_rtsd_20220121"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">4239</span>) <span class="sc">%&gt;%</span></span>
@@ -1123,7 +1115,7 @@ First 10 features:
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `tha_admbnda_adm1_rtsd_20220121' from data source 
-  `/Users/jacksontan/Documents/gga-ThaiRoad/gaa-project/data/thai_adm_boundary' 
+  `C:\ys-tx\gga-ThaiRoad\gaa-project\data\thai_adm_boundary' 
   using driver `ESRI Shapefile'
 Simple feature collection with 77 features and 16 fields
 Geometry type: MULTIPOLYGON
@@ -1132,7 +1124,7 @@ Bounding box:  xmin: 97.34336 ymin: 5.613038 xmax: 105.637 ymax: 20.46507
 Geodetic CRS:  WGS 84</code></pre>
 </div>
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(thai_provinces)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
@@ -1145,7 +1137,7 @@ $ geometry &lt;MULTIPOLYGON [°]&gt; MULTIPOLYGON (((100.6173 13..., MULTIPOLYGO
 <p>Merging the provinces to the unknown points, we can actually assign their correct province to them, though not sure if the provinces here are standardized to the one provided in the thailand accidents dataset.</p>
 <div class="cell">
 <details>
-<summary>Show code</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(<span class="fu">st_intersection</span>(unknown, thai_provinces))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">

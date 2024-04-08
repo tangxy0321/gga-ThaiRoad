@@ -1,5 +1,5 @@
 ---
-title: "Project Proposal"
+title: "Spatial Points Pattern Analysis on Road Accidents in Thailand"
 format: html
 author:   
   - Tan Jun Sheng Jackson
@@ -251,14 +251,14 @@ variable to select for G/F/K/L Functions.
 
 ## 8. Assignment of Work
 
-| Tan                       | Tang Xin Yi                                            | Teo Ying Shi                        |
+| Tan Jun Sheng Jackson     | Tang Xin Yi                                            | Teo Ying Shi                        |
 |---------------------------|--------------------------------------------------------|-------------------------------------|
-| Exploratory Data Analysis | Network-constrained Kernel Density Estimation          | 1st-order Kernel Density Estimation |
-| Data Preparation          | Temporal Network-constrained Kernel Density Estimation | 2nd-order Kernel Density Estimation |
+| Data Preparation          | Network-constrained Kernel Density Estimation          | 1st-order Kernel Density Estimation |
+| Exploratory Data Analysis | Temporal Network-constrained Kernel Density Estimation | 2nd-order Kernel Density Estimation |
 
 ## **9. Timeline**
 
-![](img/Project-timeline.png)
+![](images/Project-timeline.png)
 
 ## **10. References**
 
