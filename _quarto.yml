@@ -6,10 +6,10 @@ website:
   navbar:
     right:
       - href: index.html
-        text: Overview
+        text: Home
         
-      - href: gaa-project/proposal.html
-        text: Project Proposal
+      - href: gaa-project/project_overview.html
+        text: Project Overview
         
       - text: Prototypes
         menu:

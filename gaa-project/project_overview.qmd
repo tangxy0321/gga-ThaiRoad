@@ -51,21 +51,13 @@ The team would be creating an application using shiny that allows the user to do
 
 This project was done by our seniors with the aim to discover the network-constrained spatio-temporal patterns of traffic accidents Leeds, United Kingdom. The following four main analyses were explored in their project:
 
--   Network Constrained Kernel Density Estimation (KDE)
+-   **Network Constrained Kernel Density Estimation (KDE):** To visualise and identify the road segments with higher intensity of traffic accidents
 
-    -   To visualise and identify the road segments with higher intensity of traffic accidents
+-   **Network Constrained K- Function:** To determine if there is spatial correlation between accident points (i.e. dispersed, clustered or randomly distributed)
 
--   Network Constrained K- Function
+-   **Network Constrained Cross K-Function:** To determine if there is spatial correlation between accident points and variables selected using multi-type K-function
 
-    -   To determine if there is spatial correlation between accident points (i.e. dispersed, clustered or randomly distributed)
-
--   Network Constrained Cross K-Function:
-
-    -   To determine if there is spatial correlation between accident points and variables selected using multi-type K-function
-
--   Network Constrained Cross Pair Correlation Function
-
-    -   To determine if there is spatial correlation between accident points and variables selected using pair correlation function
+-   **Network Constrained Cross Pair Correlation Function:** To determine if there is spatial correlation between accident points and variables selected using pair correlation function
 
 ### **4.2. Detecting traffic accident clusters with network kernel density estimation and local spatial statistics: an integrated approach ([Xie & Yan, 2013](https://doi.org/10.1016/j.jtrangeo.2013.05.009))**
 
@@ -155,21 +147,13 @@ By examining the proximity of accidents to one another, we can gain insights int
 
 In this segment, we will use 2nd Order Kernel Density Estimation methods instead to further refine our understanding of traffic accidents in Thailand. The 2nd Order Kernel Density Estimation will allow us to capture variations and fine-tune our identification of high-risk zones.
 
-**G Function**
+-   **G Function:** This function is utilized to analyze the distribution of distances between pairs of events, providing insights into the clustering or dispersion of accidents.
 
-This function is utilized to analyze the distribution of distances between pairs of events, providing insights into the clustering or dispersion of accidents.
+-   **F Function:** The F function is employed to assess the distribution of event-to-nearest-neighbor distances, aiding in the detection of clustering patterns.
 
-**F Function**
+-   **K Function:** By examining the cumulative distribution function of event-to-event distances, the K function helps assess spatial patterns and clustering in the distribution of accidents.
 
-The F function is employed to assess the distribution of event-to-nearest-neighbor distances, aiding in the detection of clustering patterns.
-
-**K Function**
-
-By examining the cumulative distribution function of event-to-event distances, the K function helps assess spatial patterns and clustering in the distribution of accidents.
-
-**L Function**
-
-The L function is a transformation of the K function, aiding in the interpretation of spatial patterns and providing a nuanced understanding of accident distribution in Thailand.
+-   **L Function:** The L function is a transformation of the K function, aiding in the interpretation of spatial patterns and providing a nuanced understanding of accident distribution in Thailand.
 
 #### **6.3.4. Network-constrained Spatial Point Patterns Analysis**
 
@@ -252,7 +236,7 @@ variable to select for G/F/K/L Functions.
 ## 8. Assignment of Work
 
 | Tan Jun Sheng Jackson     | Tang Xin Yi                                            | Teo Ying Shi                        |
-|---------------------------|--------------------------------------------------------|-------------------------------------|
+|----------------------|---------------------------------|----------------------|
 | Data Preparation          | Network-constrained Kernel Density Estimation          | 1st-order Kernel Density Estimation |
 | Exploratory Data Analysis | Temporal Network-constrained Kernel Density Estimation | 2nd-order Kernel Density Estimation |
 

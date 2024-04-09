@@ -1,5 +1,7 @@
 ---
-title: "IS415 AY23-24 Project"
+title: "Spatial Points Pattern Analysis on Road Accidents in Thailand"
 ---
 
-# 
+This project involves conducting Spatial Point Pattern Analysis on road accidents within the city of **Bangkok**, Thailand. In this context, a hotspot refers to a specific location or segment of the road network with higher frequency of accidents.
+
+The primary goal of this project is to democratise geospatial data analytics. Our objective is to develop a user-friendly web application facilitating Exploratory Data Analysis, Spatial Point Kernel Density Estimation, and Network-Constrained Analysis. Users with little or no coding experience, will be able to carry out these analyses without the need for coding and in-depth knowledge about the dataset. This allows usage of geospatial data for relevant studies or other purposes.
