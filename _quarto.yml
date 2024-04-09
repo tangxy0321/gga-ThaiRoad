@@ -4,6 +4,7 @@ project:
 website:
   title: "ThaiRoad"
   navbar:
+    background: "#D2D1EE"
     right:
       - href: index.html
         text: Home
