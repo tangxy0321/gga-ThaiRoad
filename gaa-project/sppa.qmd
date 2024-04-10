@@ -79,9 +79,9 @@ any(duplicated(bangkok_ppp_jit))
 bangkok_accidents_ppp <- bangkok_ppp_jit[bangkok_owin]
 ```
 
-## **4.0 1st Order Spatial Point Patterns Analysis**
+# **4. 1st Order Spatial Point Patterns Analysis**
 
-### **4.1 Kernel Density Estimation (KDE) Maps**
+## **4.1 Kernel Density Estimation (KDE) Maps**
 
 ```{r}
 bangkok_accidents_ppp_km <- rescale(bangkok_accidents_ppp, 1000, "km")
@@ -121,7 +121,7 @@ kde_adaptive_kernel
 tmap_mode('plot')
 ```
 
-### **4.2 Nearest Neighbour Analysis using Clark-Evans Test**
+## **4.2 Nearest Neighbour Analysis using Clark-Evans Test**
 
 The test hypotheses are:
 
@@ -147,9 +147,9 @@ clarkevans.test(bangkok_accidents_ppp,
 
 -   Reject the null hypothesis (H~0~) that the spatial distribution of accident points in Bangkok are randomly distributed, signs of clusterings observed
 
-## **5.0 2nd Order Spatial Point Patterns Analysis**
+# **5. 2nd Order Spatial Point Patterns Analysis**
 
-### **5.1 Complete Spatial Randomness (CSR) Test**
+## **5.1 Complete Spatial Randomness (CSR) Test**
 
 To perform CSR, we will be using four functions to assess the spatial distribution.
 

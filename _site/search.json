@@ -453,5 +453,26 @@
     "title": "Spatial Point Pattern Analysis",
     "section": "5.0 2nd Order Spatial Point Patterns Analysis",
     "text": "5.0 2nd Order Spatial Point Patterns Analysis\n\n5.1 Complete Spatial Randomness (CSR) Test\nTo perform CSR, we will be using four functions to assess the spatial distribution.\n\nG function\nF function\nK function\nL function\n\n\nG functionF functionK functionL function\n\n\n\n\nCode\nG_bangkok.csr &lt;- envelope(bangkok_accidents_ppp, Gest, nsim = 99)\nplot(G_bangkok.csr)\n\n\n\n\n\n\nCode\nF_bangkok.csr &lt;- envelope(bangkok_accidents_ppp, Fest, nsim = 99)\nplot(F_bangkok.csr)\n\n\n\n\n\n\nCode\nK_bangkok.csr &lt;- envelope(bangkok_accidents_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)\nplot(K_bangkok.csr)\n\n\n\n\n\n\nCode\nL_bangkok.csr &lt;- envelope(bangkok_accidents_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)\nplot(L_bangkok.csr)"
+  },
+  {
+    "objectID": "gaa-project/sppa.html#kernel-density-estimation-kde-maps",
+    "href": "gaa-project/sppa.html#kernel-density-estimation-kde-maps",
+    "title": "Spatial Point Pattern Analysis",
+    "section": "4.1 Kernel Density Estimation (KDE) Maps",
+    "text": "4.1 Kernel Density Estimation (KDE) Maps\n\n\nCode\nbangkok_accidents_ppp_km &lt;- rescale(bangkok_accidents_ppp, 1000, \"km\")\n\nkde_bangkok_diggle &lt;- density(bangkok_accidents_ppp_km,\n                                sigma=bw.diggle,\n                                edge=TRUE,\n                                kernel=\"gaussian\")\nplot(kde_bangkok_diggle,\n     main = \"Automatic-Bandwidth KDE for Road Accident Points\")\n\n\n\n\n\nPlotting interactive KDE Maps\n\n\nCode\nraster_kde_auto_diggle &lt;- raster(kde_bangkok_diggle)\nprojection(raster_kde_auto_diggle) &lt;- CRS(\"+init=EPSG:32648 +units=km\")\n\ntmap_mode('view')\n\nkde_adaptive_kernel &lt;- tm_basemap(server = \"OpenStreetMap.DE\") +\n  tm_basemap(server = \"Esri.WorldImagery\") +\n  tm_shape(raster_kde_auto_diggle) +\n  tm_raster(\"layer\",\n            n = 7,\n            title = \"v\",\n            style = \"pretty\",\n            alpha = 0.6,\n            palette = c(\"#fafac3\",\"#fd953b\",\"#f02a75\",\"#b62385\",\"#021c9e\")) +\n  tm_shape(thai_boundary) +\n  tm_polygons(alpha=0.1,id=\"ADM2_EN\") +\n  tm_view(set.zoom.limits = c(10, 15)) +\n  tmap_options(check.and.fix = TRUE)\n\nkde_adaptive_kernel\n\n\n\n\n\n\n\nCode\ntmap_mode('plot')"
+  },
+  {
+    "objectID": "gaa-project/sppa.html#nearest-neighbour-analysis-using-clark-evans-test",
+    "href": "gaa-project/sppa.html#nearest-neighbour-analysis-using-clark-evans-test",
+    "title": "Spatial Point Pattern Analysis",
+    "section": "4.2 Nearest Neighbour Analysis using Clark-Evans Test",
+    "text": "4.2 Nearest Neighbour Analysis using Clark-Evans Test\nThe test hypotheses are:\n\nH0 = The spatial distribution of accident points in Bangkok are randomly distributed.\nH1= The spatial distribution of accident points in Bangkok are not randomly distributed.\n\nThe 95% confidence interval will be used.\n\n\nCode\nclarkevans.test(bangkok_accidents_ppp,\n                correction=\"none\",\n                clipregion=\"bangkok_owin\",\n                alternative=c(\"clustered\"),\n                nsim=99)\n\n\n\n    Clark-Evans test\n    No edge correction\n    Z-test\n\ndata:  bangkok_accidents_ppp\nR = 0.15668, p-value &lt; 2.2e-16\nalternative hypothesis: clustered (R &lt; 1)\n\n\nInterpretations\n\nR-value &lt; 1 indicates clustered distribution\np-value (&lt; 2.2e-16) &lt; 0.05 (critical value)\nReject the null hypothesis (H0) that the spatial distribution of accident points in Bangkok are randomly distributed, signs of clusterings observed"
+  },
+  {
+    "objectID": "gaa-project/sppa.html#complete-spatial-randomness-csr-test",
+    "href": "gaa-project/sppa.html#complete-spatial-randomness-csr-test",
+    "title": "Spatial Point Pattern Analysis",
+    "section": "5.1 Complete Spatial Randomness (CSR) Test",
+    "text": "5.1 Complete Spatial Randomness (CSR) Test\nTo perform CSR, we will be using four functions to assess the spatial distribution.\n\nG function\nF function\nK function\nL function\n\n\nG functionF functionK functionL function\n\n\n\n\nCode\nG_bangkok.csr &lt;- envelope(bangkok_accidents_ppp, Gest, nsim = 99)\nplot(G_bangkok.csr)\n\n\n\n\n\n\nCode\nF_bangkok.csr &lt;- envelope(bangkok_accidents_ppp, Fest, nsim = 99)\nplot(F_bangkok.csr)\n\n\n\n\n\n\nCode\nK_bangkok.csr &lt;- envelope(bangkok_accidents_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)\nplot(K_bangkok.csr)\n\n\n\n\n\n\nCode\nL_bangkok.csr &lt;- envelope(bangkok_accidents_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)\nplot(L_bangkok.csr)"
   }
 ]
