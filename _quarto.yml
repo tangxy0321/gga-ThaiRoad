@@ -20,13 +20,10 @@ website:
           - text: Exploratory Data Analysis
             href: gaa-project/eda.html
             
-          - text: 1st Order Kernel Density Estimation Analysis
+          - text: Spatial Point Pattern Analysis
             # href: gaa-project/<file_name>.html
             
-          - text: 2nd Order Kernel Density Estimation Analysis
-            # href: gaa-project/<file_name>.html
-            
-          - text: Network-constrained Spatial Point Patterns Analysis
+          - text: Network Constrained Spatial Point Pattern Analysis
             # href: gaa-project/<file_name>.html
         
       - href: gaa-project/poster.html
