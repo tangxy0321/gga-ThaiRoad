@@ -2,9 +2,9 @@
 title: "Spatial Points Pattern Analysis on Road Accidents in Thailand"
 ---
 
-![](gaa-project/images/Bangkok_downtown_traffic.jpg)
-
 By Group 10
+
+![Snapshot of Bangkok's Bustling Traffic](gaa-project/images/Bangkok_downtown_traffic.jpg)
 
 This project involves conducting Spatial Point Pattern Analysis on road accidents within the city of **Bangkok, Thailand**. In this context, a hotspot refers to a specific location or segment of the road network with higher frequency of accidents.
 

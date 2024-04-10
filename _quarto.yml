@@ -21,7 +21,7 @@ website:
             href: gaa-project/eda.html
             
           - text: Spatial Point Pattern Analysis
-            # href: gaa-project/<file_name>.html
+            href: gaa-project/sppa.html
             
           - text: Network Constrained Spatial Point Pattern Analysis
             # href: gaa-project/<file_name>.html

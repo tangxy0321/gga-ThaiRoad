@@ -249,7 +249,7 @@
     "href": "index.html",
     "title": "Spatial Points Pattern Analysis on Road Accidents in Thailand",
     "section": "",
-    "text": "By Group 10\nThis project involves conducting Spatial Point Pattern Analysis on road accidents within the city of Bangkok, Thailand. In this context, a hotspot refers to a specific location or segment of the road network with higher frequency of accidents.\nThe primary goal is to democratise geospatial data analytics. and our objective is to develop a user-friendly web application facilitating Exploratory Data Analysis, Spatial Points Pattern Analysis, and Network Constrained Spatial Point Pattern Analysis. Users with little or no coding experience, will be able to carry out these analyses without the need for coding and in-depth knowledge about the dataset. This allows usage of geospatial data for relevant studies or other purposes."
+    "text": "By Group 10\n\n\n\nSnapshot of Bangkok’s Bustling Traffic\n\n\nThis project involves conducting Spatial Point Pattern Analysis on road accidents within the city of Bangkok, Thailand. In this context, a hotspot refers to a specific location or segment of the road network with higher frequency of accidents.\nThe primary goal is to democratise geospatial data analytics. and our objective is to develop a user-friendly web application facilitating Exploratory Data Analysis, Spatial Points Pattern Analysis, and Network Constrained Spatial Point Pattern Analysis. Users with little or no coding experience, will be able to carry out these analyses without the need for coding and in-depth knowledge about the dataset. This allows usage of geospatial data for relevant studies or other purposes."
   },
   {
     "objectID": "gaa-project/report.html",
@@ -404,5 +404,54 @@
     "title": "Spatial Points Pattern Analysis on Road Accidents in Thailand",
     "section": "10. References",
     "text": "10. References\nAng, J. Y., Chong, S., & Tan, Y. L. (2019, April 15). Signal Research Paper. SMU Wikipedia. https://wiki.smu.edu.sg/1819t2is415/Signal_Research_Paper\nSafety and Mobility (SAM) & Social Determinants of Health (SDH). (2023, December 13). Global status report on road safety 2023. World Health Organization. https://www.who.int/publications/i/item/9789240086517\nSocial Determinants of Health (SDH). (2018, June 17). Global status report on road safety 2018. World Health Organization. https://www.who.int/publications/i/item/9789241565684\nXie, Z., & Yan, J. J. (2013). Detecting traffic accident clusters with network kernel density estimation and local spatial statistics: an integrated approach. Journal of Transport Geography, 31, 64–71. https://doi.org/10.1016/j.jtrangeo.2013.05.009"
+  },
+  {
+    "objectID": "gaa-project/sppa.html",
+    "href": "gaa-project/sppa.html",
+    "title": "Spatial Point Pattern Analysis",
+    "section": "",
+    "text": "1st Order Spatial Point Patterns Analysis\n\nKernel Density Estimation (KDE) Maps\n\n2nd Order Spatial Point Patterns Analysis\n\nComplete Spatial Randomness (CSR) Test using G, F, K and L functions"
+  },
+  {
+    "objectID": "gaa-project/sppa.html#creating-owin-object-using-sf-method",
+    "href": "gaa-project/sppa.html#creating-owin-object-using-sf-method",
+    "title": "Spatial Point Pattern Analysis",
+    "section": "3.1 Creating owin object using sf method",
+    "text": "3.1 Creating owin object using sf method\n\n\nCode\nbangkok_owin &lt;- as.owin(thai_boundary)"
+  },
+  {
+    "objectID": "gaa-project/sppa.html#create-ppp-object-using-sf-method",
+    "href": "gaa-project/sppa.html#create-ppp-object-using-sf-method",
+    "title": "Spatial Point Pattern Analysis",
+    "section": "3.2 Create ppp object using sf method",
+    "text": "3.2 Create ppp object using sf method\n\n\nCode\nbangkok_ppp &lt;- as.ppp(accidents_thai)\nsummary(bangkok_ppp)\n\n\nMarked planar point pattern:  6081 points\nAverage intensity 2.555454e-06 points per square unit\n\n*Pattern contains duplicated points*\n\nCoordinates are given to 2 decimal places\ni.e. rounded to the nearest multiple of 0.01 units\n\nmarks are of type 'character'\nSummary:\n   Length     Class      Mode \n     6081 character character \n\nWindow: rectangle = [-5027.68, 59252.71] x [1509921.7, 1546941] units\n                    (64280 x 37020 units)\nWindow area = 2379620000 square units"
+  },
+  {
+    "objectID": "gaa-project/sppa.html#handling-duplicated-points",
+    "href": "gaa-project/sppa.html#handling-duplicated-points",
+    "title": "Spatial Point Pattern Analysis",
+    "section": "3.3 Handling duplicated points",
+    "text": "3.3 Handling duplicated points\nIn spatial point patterns analysis, the presence of duplicates can introduce bias or distortion in the analysis. Statistical methodologies used for analysing spatial point patterns often assume that each point represents a unique event. When duplicates are present, these assumptions are violated and could potentially lead to inaccurate analysis results. Therefore, we need to identify and handle the duplicates appropriately.\n\n\nCode\nany(duplicated(bangkok_ppp))\n\n\n[1] TRUE\n\n\n\n\nCode\nsum(multiplicity(bangkok_ppp) &gt; 1)\n\n\n[1] 1172\n\n\nThe output shows that there are duplicated point events. We will use the jittering approach to remove the duplicates.\n\n\nCode\nbangkok_ppp_jit &lt;- rjitter(bangkok_ppp, \n                             retry=TRUE, \n                             nsim=1, \n                             drop=TRUE)\n\nany(duplicated(bangkok_ppp_jit))\n\n\n[1] FALSE"
+  },
+  {
+    "objectID": "gaa-project/sppa.html#combining-point-events-object-and-owin-object",
+    "href": "gaa-project/sppa.html#combining-point-events-object-and-owin-object",
+    "title": "Spatial Point Pattern Analysis",
+    "section": "3.4 Combining point events object and owin object",
+    "text": "3.4 Combining point events object and owin object\n\n\nCode\nbangkok_accidents_ppp &lt;- bangkok_ppp_jit[bangkok_owin]"
+  },
+  {
+    "objectID": "gaa-project/sppa.html#st-order-spatial-point-patterns-analysis",
+    "href": "gaa-project/sppa.html#st-order-spatial-point-patterns-analysis",
+    "title": "Spatial Point Pattern Analysis",
+    "section": "4.0 1st Order Spatial Point Patterns Analysis",
+    "text": "4.0 1st Order Spatial Point Patterns Analysis\n\n4.1 Kernel Density Estimation (KDE) Maps\n\n\nCode\nbangkok_accidents_ppp_km &lt;- rescale(bangkok_accidents_ppp, 1000, \"km\")\n\nkde_bangkok_diggle &lt;- density(bangkok_accidents_ppp_km,\n                                sigma=bw.diggle,\n                                edge=TRUE,\n                                kernel=\"gaussian\")\nplot(kde_bangkok_diggle,\n     main = \"Automatic-Bandwidth KDE for Road Accident Points\")\n\n\n\n\n\nPlotting interactive KDE Maps\n\n\nCode\nraster_kde_auto_diggle &lt;- raster(kde_bangkok_diggle)\nprojection(raster_kde_auto_diggle) &lt;- CRS(\"+init=EPSG:32648 +units=km\")\n\ntmap_mode('view')\n\nkde_adaptive_kernel &lt;- tm_basemap(server = \"OpenStreetMap.DE\") +\n  tm_basemap(server = \"Esri.WorldImagery\") +\n  tm_shape(raster_kde_auto_diggle) +\n  tm_raster(\"layer\",\n            n = 7,\n            title = \"v\",\n            style = \"pretty\",\n            alpha = 0.6,\n            palette = c(\"#fafac3\",\"#fd953b\",\"#f02a75\",\"#b62385\",\"#021c9e\")) +\n  tm_shape(thai_boundary) +\n  tm_polygons(alpha=0.1,id=\"ADM2_EN\") +\n  tm_view(set.zoom.limits = c(10, 15)) +\n  tmap_options(check.and.fix = TRUE)\n\nkde_adaptive_kernel\n\n\n\n\n\n\n\nCode\ntmap_mode('plot')\n\n\n\n\n4.2 Nearest Neighbour Analysis using Clark-Evans Test\nThe test hypotheses are:\n\nH0 = The spatial distribution of accident points in Bangkok are randomly distributed.\nH1= The spatial distribution of accident points in Bangkok are not randomly distributed.\n\nThe 95% confidence interval will be used.\n\n\nCode\nclarkevans.test(bangkok_accidents_ppp,\n                correction=\"none\",\n                clipregion=\"bangkok_owin\",\n                alternative=c(\"clustered\"),\n                nsim=99)\n\n\n\n    Clark-Evans test\n    No edge correction\n    Z-test\n\ndata:  bangkok_accidents_ppp\nR = 0.1573, p-value &lt; 2.2e-16\nalternative hypothesis: clustered (R &lt; 1)\n\n\nInterpretations\n\nR-value &lt; 1 indicates clustered distribution\np-value (&lt; 2.2e-16) &lt; 0.05 (critical value)\nReject the null hypothesis (H0) that the spatial distribution of accident points in Bangkok are randomly distributed, signs of clusterings observed"
+  },
+  {
+    "objectID": "gaa-project/sppa.html#nd-order-spatial-point-patterns-analysis",
+    "href": "gaa-project/sppa.html#nd-order-spatial-point-patterns-analysis",
+    "title": "Spatial Point Pattern Analysis",
+    "section": "5.0 2nd Order Spatial Point Patterns Analysis",
+    "text": "5.0 2nd Order Spatial Point Patterns Analysis\n\n5.1 Complete Spatial Randomness (CSR) Test\nTo perform CSR, we will be using four functions to assess the spatial distribution.\n\nG function\nF function\nK function\nL function\n\n\nG functionF functionK functionL function\n\n\n\n\nCode\nG_bangkok.csr &lt;- envelope(bangkok_accidents_ppp, Gest, nsim = 99)\nplot(G_bangkok.csr)\n\n\n\n\n\n\nCode\nF_bangkok.csr &lt;- envelope(bangkok_accidents_ppp, Fest, nsim = 99)\nplot(F_bangkok.csr)\n\n\n\n\n\n\nCode\nK_bangkok.csr &lt;- envelope(bangkok_accidents_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)\nplot(K_bangkok.csr)\n\n\n\n\n\n\nCode\nL_bangkok.csr &lt;- envelope(bangkok_accidents_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)\nplot(L_bangkok.csr)"
   }
 ]

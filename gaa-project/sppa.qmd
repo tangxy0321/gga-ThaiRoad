@@ -1,0 +1,200 @@
+---
+title: "Spatial Point Pattern Analysis"
+format: 
+  html:
+    code-fold: true
+    code-summary: "Show code"
+execute: 
+  eval: true
+  echo: true
+  freeze: auto
+  warning: false
+author:
+  - Teo Ying Shi
+---
+
+# **Objectives**
+
+1.  1st Order Spatial Point Patterns Analysis
+    -   Kernel Density Estimation (KDE) Maps
+2.  2nd Order Spatial Point Patterns Analysis
+    -   Complete Spatial Randomness (CSR) Test using G, F, K and L functions
+
+# **1. Loading required R packages**
+
+```{r}
+pacman::p_load(maptools, raster, sf, st, spatstat, tidyverse, tmap)
+```
+
+# **2. Importing the RDS files**
+
+We will be importing the .RDS file prepared in the **data_preparation** document.
+
+```{r}
+accidents_thai <- read_rds("data/rds/accidents_thai.rds")
+thai_boundary <- read_rds("data/rds/thai_boundary.rds")
+```
+
+# **3. Data wrangling**
+
+## **3.1 Creating owin object using sf method**
+
+```{r}
+bangkok_owin <- as.owin(thai_boundary)
+```
+
+## **3.2 Create ppp object using sf method**
+
+```{r}
+bangkok_ppp <- as.ppp(accidents_thai)
+summary(bangkok_ppp)
+```
+
+## **3.3 Handling duplicated points**
+
+In spatial point patterns analysis, the presence of duplicates can introduce bias or distortion in the analysis. Statistical methodologies used for analysing spatial point patterns often assume that each point represents a unique event. When duplicates are present, these assumptions are violated and could potentially lead to inaccurate analysis results. Therefore, we need to identify and handle the duplicates appropriately.
+
+```{r}
+any(duplicated(bangkok_ppp))
+```
+
+```{r}
+sum(multiplicity(bangkok_ppp) > 1)
+```
+
+The output shows that there are duplicated point events. We will use the jittering approach to remove the duplicates.
+
+```{r}
+bangkok_ppp_jit <- rjitter(bangkok_ppp, 
+                             retry=TRUE, 
+                             nsim=1, 
+                             drop=TRUE)
+
+any(duplicated(bangkok_ppp_jit))
+```
+
+## **3.4 Combining point events object and owin object**
+
+```{r}
+bangkok_accidents_ppp <- bangkok_ppp_jit[bangkok_owin]
+```
+
+## **4.0 1st Order Spatial Point Patterns Analysis**
+
+### **4.1 Kernel Density Estimation (KDE) Maps**
+
+```{r}
+bangkok_accidents_ppp_km <- rescale(bangkok_accidents_ppp, 1000, "km")
+
+kde_bangkok_diggle <- density(bangkok_accidents_ppp_km,
+                                sigma=bw.diggle,
+                                edge=TRUE,
+                                kernel="gaussian")
+plot(kde_bangkok_diggle,
+     main = "Automatic-Bandwidth KDE for Road Accident Points")
+```
+
+**Plotting interactive KDE Maps**
+
+```{r}
+raster_kde_auto_diggle <- raster(kde_bangkok_diggle)
+projection(raster_kde_auto_diggle) <- CRS("+init=EPSG:32648 +units=km")
+
+tmap_mode('view')
+
+kde_adaptive_kernel <- tm_basemap(server = "OpenStreetMap.DE") +
+  tm_basemap(server = "Esri.WorldImagery") +
+  tm_shape(raster_kde_auto_diggle) +
+  tm_raster("layer",
+            n = 7,
+            title = "v",
+            style = "pretty",
+            alpha = 0.6,
+            palette = c("#fafac3","#fd953b","#f02a75","#b62385","#021c9e")) +
+  tm_shape(thai_boundary) +
+  tm_polygons(alpha=0.1,id="ADM2_EN") +
+  tm_view(set.zoom.limits = c(10, 15)) +
+  tmap_options(check.and.fix = TRUE)
+
+kde_adaptive_kernel
+
+tmap_mode('plot')
+```
+
+### **4.2 Nearest Neighbour Analysis using Clark-Evans Test**
+
+The test hypotheses are:
+
+-   H~0~ = The spatial distribution of accident points in Bangkok are randomly distributed.
+
+-   H~1~= The spatial distribution of accident points in Bangkok are not randomly distributed.
+
+The 95% confidence interval will be used.
+
+```{r}
+clarkevans.test(bangkok_accidents_ppp,
+                correction="none",
+                clipregion="bangkok_owin",
+                alternative=c("clustered"),
+                nsim=99)
+```
+
+**Interpretations**
+
+-   R-value \< 1 indicates clustered distribution
+
+-   p-value (\< 2.2e-16) \< 0.05 (critical value)
+
+-   Reject the null hypothesis (H~0~) that the spatial distribution of accident points in Bangkok are randomly distributed, signs of clusterings observed
+
+## **5.0 2nd Order Spatial Point Patterns Analysis**
+
+### **5.1 Complete Spatial Randomness (CSR) Test**
+
+To perform CSR, we will be using four functions to assess the spatial distribution.
+
+1.  G function
+
+2.  F function
+
+3.  K function
+
+4.  L function
+
+::: panel-tabset
+## G function
+
+```{r}
+#| eval: false
+G_bangkok.csr <- envelope(bangkok_accidents_ppp, Gest, nsim = 99)
+plot(G_bangkok.csr)
+```
+
+## F function
+
+```{r}
+#| eval: false
+F_bangkok.csr <- envelope(bangkok_accidents_ppp, Fest, nsim = 99)
+plot(F_bangkok.csr)
+```
+
+## K function
+
+```{r}
+#| eval: false
+K_bangkok.csr <- envelope(bangkok_accidents_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
+plot(K_bangkok.csr)
+```
+
+## L function
+
+```{r}
+#| eval: false
+L_bangkok.csr <- envelope(bangkok_accidents_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
+plot(L_bangkok.csr)
+```
+:::
+
+# **UI Prototype Design**
+
+![Figure 1. Proposed Spatial Point Pattern Analysis (SPPA) UI for Shiny Web Application](images/sppa_prototype_ui.png)
