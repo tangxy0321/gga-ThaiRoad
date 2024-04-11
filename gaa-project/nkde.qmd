@@ -1,0 +1,138 @@
+---
+title: "Network-constrained 1st-Order Spatial Point Pattern Analysis"
+format: 
+  html:
+    code-fold: true
+    code-summary: "Show code"
+execute: 
+  eval: true
+  echo: true
+  freeze: auto
+  warning: false
+author:
+  - Tang Xin Yi
+---
+
+# Packages
+
+```{r}
+pacman::p_load(sf,tidyverse,spNetwork,tmap,classInt, viridis)
+```
+
+# Import data
+
+```{r}
+crime_data <- read_rds("../../data/proj_data/rds/accidents_thai.rds")
+thai_bound <- st_read(dsn = "../../data/proj_data/thai_adm_boundary",
+                      layer = "tha_admbnda_adm1_rtsd_20220121")
+# thai_bound <- read_rds("../../data/proj_data/rds/thai_boundary.rds")
+thai_road <- read_rds("../../data/proj_data/rds/thai_roads.rds")
+```
+
+# Visualising difference in network constrained kernel density through different filters by columns
+
+Some potential filtering to apply to dataset to allow user to zoom in into specific area he/she is interested in:
+
+-   Accident categories
+
+-   Fatal accident \[yes/no\]
+
+-   Province (MUST-HAVE)
+
+But let's visualised the overall look
+
+```{r}
+#| fig-width: 12
+#| fig-height:12
+# tmap_mode("view")
+# tm_shape(crime_data) +
+#   tm_dots() +
+#   tm_shape(thai_road) +
+#   tm_lines()
+# tmap_mode("plot")
+plot(crime_data)
+```
+
+```{r}
+table(crime_data$fatal_accident)
+table(crime_data$accident_categories)
+table(crime_data$province_en)
+```
+
+Example: filter by province = "Bangkok", accident_categories = "speeding", fatal_accident == "yes" (Allowing users to change freely)
+
+```{r}
+province_factor = "Bangkok"
+accident_category = "speeding"
+fatal = "yes"
+
+crime_data_filtered = crime_data %>% 
+  filter(province_en == province_factor,
+         accident_categories == accident_category,
+         fatal_accident == fatal)
+```
+
+# Network-constrained Kernel Density Estimation
+
+### Get the portion of road network for the selected province
+
+```{r}
+thai_prov <- thai_bound[thai_bound$ADM1_EN == province_factor]
+```
+
+```{r}
+tmap_mode("view")
+tm_shape(thai_prov) +
+  tm_polygons() +
+tm_shape(crime_data_filtered) +
+  tm_dots() +
+tm_shape(thai_road) +
+  tm_lines()
+```
+
+## Prepare `lixel` object
+
+1st try with 1000m diameter
+
+```{r}
+lixels <- lixelize_lines(thai_road,
+                         1000,
+                         mindist = 500)
+```
+
+## Generate line centre points
+
+```{r}
+samples <- lines_center(lixels)
+densities <- nkde(thai_road,
+                  events = childcare,
+                  w = rep(1, nrow(childcare)),
+                  samples = samples,
+                  ## important
+                  kernel_name = "quartic",
+                  bw = 300,
+                  ## important
+                  div = "bw",
+                  method = "simple",
+                  digits = 1,
+                  tol = 1,
+                  grid_shape = c(1,1),
+                  max_depth = 8,
+                  # aggregate events within 5m radius (faster calculation)
+                  agg = 5,
+                  sparse = TRUE,
+                  verbose = FALSE
+                  )
+```
+
+## Generate plot
+
+```{r}
+
+```
+
+# UI design for Analysis
+
+![Storyboard of NKDE](images/ui_nkde.png){fig-align="center"}
+
+The user would be able to filter the dataset to see impact different categories on the network-constrained kernel density map created and use the interpretation rules given to derive at a conclusion.
