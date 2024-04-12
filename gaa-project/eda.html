@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Tan Jun Sheng Jackson">
+<meta name="dcterms.date" content="2024-04-12">
+
+<title>ThaiRoad - Exploratory Data Analysis</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="../site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="../site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<link href="../site_libs/leaflet-1.3.1/leaflet.css" rel="stylesheet">
+<script src="../site_libs/leaflet-1.3.1/leaflet.js"></script>
+<link href="../site_libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet">
+<script src="../site_libs/proj4-2.6.2/proj4.min.js"></script>
+<script src="../site_libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+<link href="../site_libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet">
+<script src="../site_libs/leaflet-binding-2.2.1/leaflet.js"></script>
+<script src="../site_libs/leaflet-providers-2.0.0/leaflet-providers_2.0.0.js"></script>
+<script src="../site_libs/leaflet-providers-plugin-2.2.1/leaflet-providers-plugin.js"></script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">ThaiRoad</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../gaa-project/project_overview.html" rel="" target="">
+ <span class="menu-text">Project Overview</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-prototypes" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">Prototypes</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-prototypes">    
+        <li>
+    <a class="dropdown-item" href="../gaa-project/data_preparation.html" rel="" target="">
+ <span class="dropdown-text">Data Preparation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../gaa-project/eda.html" rel="" target="">
+ <span class="dropdown-text">Exploratory Data Analysis</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../gaa-project/sppa.html" rel="" target="">
+ <span class="dropdown-text">Spatial Point Pattern Analysis</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../gaa-project/nkde.html" rel="" target="">
+ <span class="dropdown-text">Network Constrained Spatial Point Pattern Analysis</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../gaa-project/poster.html" rel="" target="">
+ <span class="menu-text">Poster</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../gaa-project/user-guide.html" rel="" target="">
+ <span class="menu-text">User Guide</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../gaa-project/Thai_Accidents.html" rel="" target="">
+ <span class="menu-text">Dataset Exploration</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../gaa-project/MoM.html" rel="" target="">
+ <span class="menu-text">Minutes of Meeting</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/tangxy0321/gga-ThaiRoad" rel="" target=""><i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Exploratory Data Analysis</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Tan Jun Sheng Jackson </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 12, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="loading-required-r-packages" class="level1">
+<h1>1. Loading required R packages</h1>
+<p>The R packages that we will be using to prepare our data are as follows:</p>
+<ul>
+<li><p><strong>sf:</strong> Import, manage and process vector-based geospatial data in R.</p></li>
+<li><p><strong>tidyverse:</strong> a collection of packages for data science tasks</p></li>
+<li><p><strong>gridExtra:</strong> For displaying plots in the same column/row.</p></li>
+<li><p><strong>tmap:</strong> Provides functions for plotting cartographic quality static point patterns maps or interactive maps by using leaflet API.</p></li>
+<li><p><strong>maptools:</strong> Provides a set of tools for manipulating geographic data.</p></li>
+</ul>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(lubridate, sf, tidyverse, gridExtra, tmap, maptools, ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="importing-the-rds-files" class="level1">
+<h1>2. Importing the RDS files</h1>
+<p>We will be importing the .RDS file prepared in the <strong>data_preparation</strong> document.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>accidents_thai <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"../data/rds/accidents_thai.rds"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>accidents_thai</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 6081 features and 11 fields
+Geometry type: POINT
+Dimension:     XY
+Bounding box:  xmin: -5027.682 ymin: 1509922 xmax: 59252.71 ymax: 1546941
+Projected CRS: WGS 84 / UTM zone 48N
+First 10 features:
+      district province weather_condition road_description slope_description
+727      Dusit  Bangkok                no       wide curve             other
+748      Dusit  Bangkok                no            other             other
+44601    Dusit  Bangkok                no       wide curve             other
+52446    Dusit  Bangkok                no    straight road             other
+53078    Dusit  Bangkok                no    straight road             other
+54124    Dusit  Bangkok                no       merge lane             other
+54203    Dusit  Bangkok                no    straight road             other
+54715    Dusit  Bangkok                no    straight road             other
+54971    Dusit  Bangkok                no    straight road             other
+56233    Dusit  Bangkok                no    straight road             other
+      accident_categories vehicle_categories fatal_accident year weekday
+727                others        two_wheeled             no 2019     Mon
+748                others        two_wheeled             no 2019     Mon
+44601              others        two_wheeled             no 2021     Sun
+52446              others        two_wheeled             no 2021     Fri
+53078              others        two_wheeled             no 2021     Mon
+54124              others       four_wheeled             no 2021     Thu
+54203              others        two_wheeled             no 2021     Sat
+54715              others        two_wheeled             no 2021     Thu
+54971              others        two_wheeled             no 2021     Wed
+56233              others        two_wheeled             no 2021     Tue
+      accident_hr                 geometry
+727             0 POINT (17104.54 1529804)
+748            16 POINT (17104.54 1529804)
+44601          13 POINT (17104.54 1529804)
+52446          20 POINT (16465.63 1528223)
+53078           4 POINT (16803.53 1529124)
+54124          15 POINT (16411.63 1528200)
+54203          12 POINT (16892.33 1529241)
+54715          14 POINT (16840.72 1529215)
+54971          11 POINT (15434.02 1525907)
+56233          14 POINT (15664.84 1526448)</code></pre>
+</div>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>thai_roads <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"../data/rds/thai_roads.rds"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>thai_roads</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 10837 features and 9 fields
+Geometry type: GEOMETRY
+Dimension:     XY
+Bounding box:  xmin: -5310.233 ymin: 1499220 xmax: 60289.26 ymax: 1547078
+Projected CRS: WGS 84 / UTM zone 48N
+First 10 features:
+      osm_id code    fclass oneway maxspeed layer bridge tunnel    district
+169 23609973 5115  tertiary      F        0     0      F      F Phra Nakhon
+170 23609995 5114 secondary      B       80     0      F      F Phra Nakhon
+173 23610078 5114 secondary      F        0     0      F      F Phra Nakhon
+177 23610163 5114 secondary      B        0     0      F      F Phra Nakhon
+284 24680969 5115  tertiary      F        0     0      F      F Phra Nakhon
+285 24680973 5115  tertiary      B        0     0      F      F Phra Nakhon
+288 24681028 5114 secondary      F        0     0      F      F Phra Nakhon
+289 24681029 5115  tertiary      F        0     0      F      F Phra Nakhon
+290 24681046 5113   primary      B        0     0      F      F Phra Nakhon
+291 24681047 5113   primary      F        0     0      F      F Phra Nakhon
+                          geometry
+169 LINESTRING (12335.7 1525612...
+170 LINESTRING (12446.96 152435...
+173 LINESTRING (13758.32 152579...
+177 LINESTRING (12504.39 152384...
+284 LINESTRING (12883.33 152352...
+285 LINESTRING (12400.39 152475...
+288 LINESTRING (12544.07 152562...
+289 LINESTRING (13169.86 152484...
+290 LINESTRING (13281.88 152540...
+291 LINESTRING (13324.86 152538...</code></pre>
+</div>
+</div>
+</section>
+<section id="introduction---what-causes-fatal-accident" class="level1">
+<h1>3. Introduction - What causes fatal accident?</h1>
+<section id="logistic-regression-to-find-statistically-significant-variables" class="level2">
+<h2 class="anchored" data-anchor-id="logistic-regression-to-find-statistically-significant-variables">3.1 Logistic Regression to find statistically significant variables</h2>
+<p>To find out which variable heavily influence whether an accident is fatal, we can make use of a Logistic Regression to check which one is statistically significant. We first need to create a temporary dataframe and drop the geometry, as the Logistic Regression model can’t take in geometry values.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>accidents_thai_df <span class="ot">&lt;-</span> <span class="fu">st_drop_geometry</span>(accidents_thai) <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character), as.factor))</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(<span class="fu">lapply</span>(accidents_thai_df, unique), length)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>           district            province   weather_condition    road_description 
+                 43                   1                   2                  12 
+  slope_description accident_categories  vehicle_categories      fatal_accident 
+                  3                   5                   4                   2 
+               year             weekday         accident_hr 
+                  4                   7                  24 </code></pre>
+</div>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(accidents_thai_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 6,081
+Columns: 11
+$ district            &lt;fct&gt; Dusit, Dusit, Dusit, Dusit, Dusit, Dusit, Dusit, D…
+$ province            &lt;fct&gt; Bangkok, Bangkok, Bangkok, Bangkok, Bangkok, Bangk…
+$ weather_condition   &lt;fct&gt; no, no, no, no, no, no, no, no, no, no, no, no, no…
+$ road_description    &lt;fct&gt; wide curve, other, wide curve, straight road, stra…
+$ slope_description   &lt;fct&gt; other, other, other, other, other, other, other, o…
+$ accident_categories &lt;fct&gt; others, others, others, others, others, others, ot…
+$ vehicle_categories  &lt;fct&gt; two_wheeled, two_wheeled, two_wheeled, two_wheeled…
+$ fatal_accident      &lt;fct&gt; no, no, no, no, no, no, no, no, no, no, no, no, no…
+$ year                &lt;dbl&gt; 2019, 2019, 2021, 2021, 2021, 2021, 2021, 2021, 20…
+$ weekday             &lt;ord&gt; Mon, Mon, Sun, Fri, Mon, Thu, Sat, Thu, Wed, Tue, …
+$ accident_hr         &lt;fct&gt; 0, 16, 13, 20, 4, 15, 12, 14, 11, 14, 11, 10, 21, …</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(accidents_thai_df<span class="sc">$</span>weather_condition)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] no  yes
+Levels: no yes</code></pre>
+</div>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Logistic Regression</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>glm.def1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(fatal_accident<span class="sc">~</span>accident_hr<span class="sc">+</span>weekday<span class="sc">+</span>year<span class="sc">+</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>                  vehicle_categories<span class="sc">+</span>accident_categories<span class="sc">+</span>slope_description<span class="sc">+</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>                  road_description<span class="sc">+</span>weather_condition, <span class="at">data=</span>accidents_thai_df, <span class="at">family=</span>binomial)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(glm.def1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = fatal_accident ~ accident_hr + weekday + year + 
+    vehicle_categories + accident_categories + slope_description + 
+    road_description + weather_condition, family = binomial, 
+    data = accidents_thai_df)
+
+Coefficients:
+                                                       Estimate Std. Error
+(Intercept)                                           -83.39498 2406.71473
+accident_hr1                                            0.24897    0.64170
+accident_hr2                                            0.89041    0.57560
+accident_hr3                                            0.41417    0.63401
+accident_hr4                                           -0.16325    0.67615
+accident_hr5                                            0.14979    0.60406
+accident_hr6                                           -0.09387    0.62052
+accident_hr7                                           -0.48386    0.61160
+accident_hr8                                           -0.76360    0.66813
+accident_hr9                                           -1.65366    0.85202
+accident_hr10                                          -2.18748    1.09545
+accident_hr11                                          -1.21010    0.72849
+accident_hr12                                          -1.33300    0.84036
+accident_hr13                                          -0.97127    0.73064
+accident_hr14                                          -0.77211    0.67036
+accident_hr15                                          -2.23477    1.09966
+accident_hr16                                          -2.21593    1.09443
+accident_hr17                                          -1.59922    0.84294
+accident_hr18                                          -1.52278    0.83953
+accident_hr19                                          -0.59294    0.63071
+accident_hr20                                          -0.25110    0.60450
+accident_hr21                                          -0.99157    0.73015
+accident_hr22                                           0.52602    0.53873
+accident_hr23                                           0.64311    0.53833
+weekday.L                                               0.25860    0.26147
+weekday.Q                                               0.29308    0.27536
+weekday.C                                               0.04831    0.27644
+weekday^4                                              -0.09462    0.26171
+weekday^5                                              -0.02155    0.28983
+weekday^6                                              -0.22472    0.29221
+year                                                    0.03318    0.09184
+vehicle_categoriesheavy_duty                            0.87587    0.25331
+vehicle_categoriesothers                                0.73492    0.64100
+vehicle_categoriestwo_wheeled                          -0.73692    0.28718
+accident_categoriesexternal_factors                    -1.06463    1.09409
+accident_categoriesothers                               1.05002    1.00828
+accident_categoriesspeeding                             0.32197    0.43877
+accident_categoriestraffic_violations                   2.28445    0.51456
+slope_descriptionother                                 -0.64242    1.02552
+slope_descriptionslope area                             0.72127    0.48341
+road_descriptionconnecting to public/commercial area   13.57671 2399.54500
+road_descriptionfour-way intersection                   0.59091 3393.46877
+road_descriptiongrade-separated intersection/ramps     13.50310 2399.54497
+road_descriptionmerge lane                              0.57236 2583.55305
+road_descriptionother                                  13.51153 2399.54478
+road_descriptionsharp curve                            13.27009 2399.54530
+road_descriptionstraight road                          12.29467 2399.54496
+road_descriptiont-intersection                          1.35431 2743.54224
+road_descriptionu-turn area                            -0.92054 2729.68587
+road_descriptionwide curve                             12.48204 2399.54498
+road_descriptiony-intersection                         -0.04116 2445.84242
+weather_conditionyes                                   -0.60656    0.38500
+                                                     z value Pr(&gt;|z|)    
+(Intercept)                                           -0.035 0.972358    
+accident_hr1                                           0.388 0.698025    
+accident_hr2                                           1.547 0.121881    
+accident_hr3                                           0.653 0.513593    
+accident_hr4                                          -0.241 0.809208    
+accident_hr5                                           0.248 0.804162    
+accident_hr6                                          -0.151 0.879760    
+accident_hr7                                          -0.791 0.428862    
+accident_hr8                                          -1.143 0.253082    
+accident_hr9                                          -1.941 0.052275 .  
+accident_hr10                                         -1.997 0.045838 *  
+accident_hr11                                         -1.661 0.096693 .  
+accident_hr12                                         -1.586 0.112687    
+accident_hr13                                         -1.329 0.183735    
+accident_hr14                                         -1.152 0.249409    
+accident_hr15                                         -2.032 0.042130 *  
+accident_hr16                                         -2.025 0.042896 *  
+accident_hr17                                         -1.897 0.057802 .  
+accident_hr18                                         -1.814 0.069700 .  
+accident_hr19                                         -0.940 0.347153    
+accident_hr20                                         -0.415 0.677866    
+accident_hr21                                         -1.358 0.174451    
+accident_hr22                                          0.976 0.328863    
+accident_hr23                                          1.195 0.232223    
+weekday.L                                              0.989 0.322652    
+weekday.Q                                              1.064 0.287155    
+weekday.C                                              0.175 0.861268    
+weekday^4                                             -0.362 0.717677    
+weekday^5                                             -0.074 0.940732    
+weekday^6                                             -0.769 0.441876    
+year                                                   0.361 0.717925    
+vehicle_categoriesheavy_duty                           3.458 0.000545 ***
+vehicle_categoriesothers                               1.147 0.251580    
+vehicle_categoriestwo_wheeled                         -2.566 0.010286 *  
+accident_categoriesexternal_factors                   -0.973 0.330513    
+accident_categoriesothers                              1.041 0.297691    
+accident_categoriesspeeding                            0.734 0.463078    
+accident_categoriestraffic_violations                  4.440 9.01e-06 ***
+slope_descriptionother                                -0.626 0.531030    
+slope_descriptionslope area                            1.492 0.135686    
+road_descriptionconnecting to public/commercial area   0.006 0.995486    
+road_descriptionfour-way intersection                  0.000 0.999861    
+road_descriptiongrade-separated intersection/ramps     0.006 0.995510    
+road_descriptionmerge lane                             0.000 0.999823    
+road_descriptionother                                  0.006 0.995507    
+road_descriptionsharp curve                            0.006 0.995588    
+road_descriptionstraight road                          0.005 0.995912    
+road_descriptiont-intersection                         0.000 0.999606    
+road_descriptionu-turn area                            0.000 0.999731    
+road_descriptionwide curve                             0.005 0.995850    
+road_descriptiony-intersection                         0.000 0.999987    
+weather_conditionyes                                  -1.575 0.115145    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 1076.69  on 6080  degrees of freedom
+Residual deviance:  900.94  on 6029  degrees of freedom
+AIC: 1004.9
+
+Number of Fisher Scoring iterations: 15</code></pre>
+</div>
+</div>
+<p>From the model above, we can see that the more statistically significant variables are accident_categories and vehicle_categories. Let’s try that again with just these 3 variables.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Logistic Regression with these 2 variables</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>glm.def2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(fatal_accident<span class="sc">~</span>accident_categories <span class="sc">+</span> vehicle_categories,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">data=</span>accidents_thai_df, <span class="at">family=</span>binomial)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(glm.def2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = fatal_accident ~ accident_categories + vehicle_categories, 
+    family = binomial, data = accidents_thai_df)
+
+Coefficients:
+                                      Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)                            -4.4600     0.4570  -9.759  &lt; 2e-16 ***
+accident_categoriesexternal_factors    -1.0169     1.0864  -0.936   0.3493    
+accident_categoriesothers               0.6423     0.5561   1.155   0.2481    
+accident_categoriesspeeding             0.2284     0.4312   0.530   0.5963    
+accident_categoriestraffic_violations   2.0275     0.4922   4.119  3.8e-05 ***
+vehicle_categoriesheavy_duty            1.0253     0.2470   4.152  3.3e-05 ***
+vehicle_categoriesothers                0.7771     0.6267   1.240   0.2150    
+vehicle_categoriestwo_wheeled          -0.6815     0.2825  -2.412   0.0159 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 1076.69  on 6080  degrees of freedom
+Residual deviance:  985.17  on 6073  degrees of freedom
+AIC: 1001.2
+
+Number of Fisher Scoring iterations: 7</code></pre>
+</div>
+</div>
+<p>Most of them are statistically significant at the 0.05 level of significance and above.</p>
+</section>
+</section>
+<section id="distribution-of-variables" class="level1">
+<h1>4. Distribution of variables</h1>
+<p>The first section of our Exploratory Data Analysis allows users to visualise the distributions of the different factors of the accidents in the <strong>accidents_thai</strong> dataset.</p>
+<section id="basic-distribution" class="level2">
+<h2 class="anchored" data-anchor-id="basic-distribution">4.1 Basic Distribution</h2>
+<p>This is an example of how one of the visualisation of a basic distribution will look like. In this case we are looking at the different categories of cause of accidents.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(accidents_thai, <span class="fu">aes</span>(<span class="at">x=</span>accident_categories)) <span class="sc">+</span> </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Accidents by Cause Categories"</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Accident Cause Categories"</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of Accidents"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="eda_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="distribution-by-proportion" class="level2">
+<h2 class="anchored" data-anchor-id="distribution-by-proportion">4.2 Distribution by Proportion</h2>
+<p>User will be able to toggle between whether they want the distribution plot to be further categorised by another factor, for example here we divide each bar by whether the accident was fatal. This will allow users to gain clearer insights into how one factor is influenced by another.</p>
+<p>In the example below, we are looking at both the distribution of accidents with or without weather condition, and the proportion of each that results in fatal accidents. From this graph in particular, there is no clear indication that bad weather is an important factor that contributes to fatality in traffic accidents.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>abs_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(accidents_thai, <span class="fu">aes</span>(<span class="at">x =</span> weather_condition, <span class="at">fill =</span> fatal_accident)) <span class="sc">+</span> </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Number of Fatal Accidents caused by Weather Condition"</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Bad Weather Condition?"</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of Accidents"</span>) <span class="sc">+</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>()</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>prop_plot <span class="ot">&lt;-</span> accidents_thai <span class="sc">%&gt;%</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(weather_condition, fatal_accident) <span class="sc">%&gt;%</span>       </span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(weather_condition) <span class="sc">%&gt;%</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pct=</span> <span class="fu">prop.table</span>(n) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(weather_condition, pct, <span class="at">fill=</span>fatal_accident) <span class="sc">+</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label=</span><span class="fu">paste0</span>(<span class="fu">sprintf</span>(<span class="st">"%1.1f"</span>, pct),<span class="st">"%"</span>)),</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>            <span class="at">position=</span><span class="fu">position_stack</span>(<span class="at">vjust=</span><span class="fl">0.5</span>)) <span class="sc">+</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Proportion of Fatal Accidents caused by Weather Condition"</span>,</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Bad Weather Condition?"</span>,</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Proportion of Accidents"</span>) <span class="sc">+</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a><span class="fu">grid.arrange</span>(abs_plot, prop_plot, <span class="at">nrow=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="eda_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="ranking-of-variables-by-province" class="level1">
+<h1>5. Ranking of variables by Province</h1>
+<p>The next section available would allow users to visualise the different variables ranked across the different provinces. The user would be able to choose the top/bottom X number of province they want to see, and also the variable they want to rank the plot by. In the code below, we are plotting the top 10 provinces in terms of raw number of accidents in each.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>accidents_top10 <span class="ot">&lt;-</span> accidents_thai <span class="sc">%&gt;%</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(province) <span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">total_count=</span><span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">top_n</span>(<span class="dv">10</span>, total_count) <span class="sc">%&gt;%</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  .<span class="sc">$</span>province</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(accidents_thai[accidents_thai<span class="sc">$</span>province <span class="sc">%in%</span> accidents_top10,], </span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x=</span>province)) <span class="sc">+</span> <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">hjust=</span><span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Top 10 Provinces with most recorded accidents"</span>,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Provinces"</span>,</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of Accidents"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="eda_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="visualising-spatial-points-using-tmap" class="level1">
+<h1>6. Visualising Spatial Points using tmap</h1>
+<p>Apart from traditional plots, we have a section that allows geospatial exploration of the dataset, as this module is, afterall, about geospatial analytics. This section in particular allows for users to visualise accident points across Thailand through a variety of filters available, like time specific filters (E.g. day of week, year, hour of day), province, fatality of accident and such. This will better allow for users to get a good initial idea of what they are going to explore in the later sections, especially 1st and 2nd order kernel density estimation.</p>
+<p>In the code below, we will be using <strong>tmap</strong> functions to display accidents between 12am to 4am on weekends in Bangkok that are fatal, categorised by accident categories.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(accidents_thai)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 6,081
+Columns: 12
+$ district            &lt;chr&gt; "Dusit", "Dusit", "Dusit", "Dusit", "Dusit", "Dusi…
+$ province            &lt;chr&gt; "Bangkok", "Bangkok", "Bangkok", "Bangkok", "Bangk…
+$ weather_condition   &lt;chr&gt; "no", "no", "no", "no", "no", "no", "no", "no", "n…
+$ road_description    &lt;chr&gt; "wide curve", "other", "wide curve", "straight roa…
+$ slope_description   &lt;chr&gt; "other", "other", "other", "other", "other", "othe…
+$ accident_categories &lt;fct&gt; others, others, others, others, others, others, ot…
+$ vehicle_categories  &lt;fct&gt; two_wheeled, two_wheeled, two_wheeled, two_wheeled…
+$ fatal_accident      &lt;chr&gt; "no", "no", "no", "no", "no", "no", "no", "no", "n…
+$ year                &lt;dbl&gt; 2019, 2019, 2021, 2021, 2021, 2021, 2021, 2021, 20…
+$ weekday             &lt;ord&gt; Mon, Mon, Sun, Fri, Mon, Thu, Sat, Thu, Wed, Tue, …
+$ accident_hr         &lt;fct&gt; 0, 16, 13, 20, 4, 15, 12, 14, 11, 14, 11, 10, 21, …
+$ geometry            &lt;POINT [m]&gt; POINT (17104.54 1529804), POINT (17104.54 15…</code></pre>
+</div>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>accidents_thai_filtered <span class="ot">&lt;-</span> accidents_thai <span class="sc">%&gt;%</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>((accident_hr <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>)),</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>         (weekday <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Fri"</span>,<span class="st">"Sat"</span>,<span class="st">"Sun"</span>)),</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>         (province <span class="sc">==</span> <span class="st">"Bangkok"</span>),</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>         (fatal_accident <span class="sc">==</span> <span class="st">"yes"</span>))</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"view"</span>)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(accidents_thai_filtered) <span class="sc">+</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>(<span class="st">"accident_categories"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+
+<div class="leaflet html-widget html-fill-item" id="htmlwidget-78a0cbea315549743fa0" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-78a0cbea315549743fa0">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"createMapPane","args":["tmap401",401]},{"method":"addProviderTiles","args":["Esri.WorldGrayCanvas",null,"Esri.WorldGrayCanvas",{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"pane":"tilePane"}]},{"method":"addProviderTiles","args":["OpenStreetMap",null,"OpenStreetMap",{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"pane":"tilePane"}]},{"method":"addProviderTiles","args":["Esri.WorldTopoMap",null,"Esri.WorldTopoMap",{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"pane":"tilePane"}]},{"method":"addCircleMarkers","args":[[13.82098888067518,13.78451059465919,13.8528149204062,13.89657557286536,13.82189699422761,13.79006763606789,13.78997909929515],[100.7312370862815,100.448527712126,100.5600605737478,100.6886719716109,100.6721178073153,100.3394529968782,100.3413893572339],[2.82842712474619,2.82842712474619,2.82842712474619,2.82842712474619,2.82842712474619,2.82842712474619,2.82842712474619],["Min.Buri","Taling.Chan","Chatuchak","Sai.Mai","Khan.Na.Yao","Thawi.Watthana","Thawi.Watthana.1"],"accidents_thai_filtered",{"interactive":true,"className":"","pane":"tmap401","stroke":true,"color":"#666666","weight":1,"opacity":0.5,"fill":true,"fillColor":["#FB8072","#FB8072","#8DD3C7","#FFFFB3","#FB8072","#FB8072","#FB8072"],"fillOpacity":[1,1,1,1,1,1,1]},null,null,["<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>Min Buri<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>accident_categories<\/nobr><\/td><td align=\"right\"><nobr>speeding<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>Taling Chan<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>accident_categories<\/nobr><\/td><td align=\"right\"><nobr>speeding<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>Chatuchak<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>accident_categories<\/nobr><\/td><td align=\"right\"><nobr>driver_factors<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>Sai Mai<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>accident_categories<\/nobr><\/td><td align=\"right\"><nobr>external_factors<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>Khan Na Yao<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>accident_categories<\/nobr><\/td><td align=\"right\"><nobr>speeding<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>Thawi Watthana<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>accident_categories<\/nobr><\/td><td align=\"right\"><nobr>speeding<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>Thawi Watthana<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>accident_categories<\/nobr><\/td><td align=\"right\"><nobr>speeding<\/nobr><\/td><\/tr><\/table><\/div>"],null,["Min Buri","Taling Chan","Chatuchak","Sai Mai","Khan Na Yao","Thawi Watthana","Thawi Watthana"],{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addLegend","args":[{"colors":["#8DD3C7","#FFFFB3","#BEBADA","#FB8072","#80B1D3"],"labels":["driver_factors","external_factors","others","speeding","traffic_violations"],"na_color":null,"na_label":"NA","opacity":1,"position":"topright","type":"unknown","title":"accident_categories","extra":null,"layerId":"legend401","className":"info legend accidents_thai_filtered","group":"accidents_thai_filtered"}]},{"method":"addLayersControl","args":[["Esri.WorldGrayCanvas","OpenStreetMap","Esri.WorldTopoMap"],"accidents_thai_filtered",{"collapsed":true,"autoZIndex":true,"position":"topleft"}]}],"limits":{"lat":[13.78451059465919,13.89657557286536],"lng":[100.3394529968782,100.7312370862815]},"fitBounds":[13.78451059465919,100.3394529968782,13.89657557286536,100.7312370862815,[]]},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="visualising-networks-using-tmap" class="level1">
+<h1>7. Visualising Networks using tmap</h1>
+<p>This section allows for users to visualise the road network across Thailand through the same variety of filters available.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"view"</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(thai_roads[thai_roads<span class="sc">$</span>tunnel <span class="sc">==</span> <span class="st">"T"</span>,]) <span class="sc">+</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_lines</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+
+<div class="leaflet html-widget html-fill-item" id="htmlwidget-a42db23441c9e1c025c0" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-a42db23441c9e1c025c0">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"createMapPane","args":["tmap401",401]},{"method":"addProviderTiles","args":["Esri.WorldGrayCanvas",null,"Esri.WorldGrayCanvas",{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"pane":"tilePane"}]},{"method":"addProviderTiles","args":["OpenStreetMap",null,"OpenStreetMap",{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"pane":"tilePane"}]},{"method":"addProviderTiles","args":["Esri.WorldTopoMap",null,"Esri.WorldTopoMap",{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"pane":"tilePane"}]},{"method":"addPolylines","args":[[[[{"lng":[100.589384,100.589472,100.5895082,100.5894284,100.5892047,100.5887073],"lat":[13.8551126,13.8553274,13.8557637,13.8560623,13.8565561,13.8576108]}]],[[{"lng":[100.5888008,100.5894976,100.5895986,100.589544,100.5894473],"lat":[13.8576551,13.8561122,13.855754,13.8553052,13.8550826]}]],[[{"lng":[100.6554393,100.6558468,100.656043,100.6563074,100.6564462,100.6566437,100.6569404,100.6574466],"lat":[13.7480121,13.7479523,13.7479255,13.7479205,13.7479277,13.7479552,13.748025,13.7481648]}]],[[{"lng":[100.6574663,100.6569333,100.6566731,100.6564886,100.6563183,100.6560417,100.6558399,100.6554284],"lat":[13.7480949,13.7479435,13.747886,13.7478543,13.747842,13.7478609,13.7478852,13.7479434]}]],[[{"lng":[100.5306997,100.530718],"lat":[13.7463061,13.7464718]}]],[[{"lng":[100.5308481,100.5308259],"lat":[13.7464501,13.7462824]}]],[[{"lng":[100.5307275,100.5306997],"lat":[13.7463021,13.7463061]}]],[[{"lng":[100.5306961,100.5306997],"lat":[13.7462824,13.7463061]}]],[[{"lng":[100.5308387,100.5309955],"lat":[13.7462795,13.7462568]}]],[[{"lng":[100.5306535,100.5306764],"lat":[13.7460361,13.74616849999999]}]],[[{"lng":[100.5309818,100.5308357],"lat":[13.7461187,13.7461413]}]],[[{"lng":[100.5307948,100.5307782],"lat":[13.7461185,13.7460056]}]],[[{"lng":[100.5306764,100.5305184],"lat":[13.74616849999999,13.7461998]}]],[[{"lng":[100.547596,100.5477912,100.5479823,100.5481128,100.548241,100.5483687,100.5484557550854],"lat":[13.7640397,13.7640471,13.764023,13.7639931,13.7639368,13.7638653,13.76380662832154]}]],[[{"lng":[100.486652,100.4850589],"lat":[13.7075354,13.7028403]}]],[[{"lng":[100.4849894,100.4865822],"lat":[13.7028621,13.7075554]}]],[[{"lng":[100.4789562,100.478873,100.4787991,100.4780251],"lat":[13.7117662,13.7121429,13.7124878,13.7163252]}]],[[{"lng":[100.4780965,100.4788733,100.4789437,100.4790282],"lat":[13.716342,13.7125045,13.7121603,13.7117822]}]],[[{"lng":[100.4734355,100.4747314],"lat":[13.7309324,13.728304]}]],[[{"lng":[100.4746932,100.4736524,100.4734767],"lat":[13.7282851,13.7303816,13.7307389]}]],[[{"lng":[100.4734767,100.4733908],"lat":[13.7307389,13.7309085]}]],[[{"lng":[100.4809251,100.4819242901802],"lat":[13.7722079,13.77340888048305]}]],[[{"lng":[100.4694424,100.4693074],"lat":[13.7540541,13.7555558]}]],[[{"lng":[100.469378,100.4695114],"lat":[13.7555591,13.7540613]}]],[[{"lng":[100.4931743,100.4958209],"lat":[13.7837925,13.78546]}]],[[{"lng":[100.4958524,100.4932038],"lat":[13.7854144,13.7837502]}]],[[{"lng":[100.4819242901802,100.4826488],"lat":[13.77340888048305,13.7742797]}]],[[{"lng":[100.5484557550854,100.5485058],"lat":[13.76380662832154,13.7637729]}]],[[{"lng":[100.5735958,100.5736251],"lat":[13.778136,13.7788187]}]],[[{"lng":[100.5741328,100.5741471,100.5741665],"lat":[13.789416,13.7897042,13.790095]}]],[[{"lng":[100.5736944,100.5736595],"lat":[13.7788155,13.778133]}]],[[{"lng":[100.5742335,100.574204],"lat":[13.7900846,13.7894073]}]],[[{"lng":[100.5450308939893,100.5448877],"lat":[13.81810546598954,13.8178101]}]],[[{"lng":[100.5361767,100.5362073,100.5362323],"lat":[13.8384136,13.8383768,13.8383324]}]],[[{"lng":[100.536046,100.5360153,100.5359914],"lat":[13.83790979999999,13.8379472,13.8379885]}]],[[{"lng":[100.5752401,100.575375,100.5755897,100.5756605,100.5757156,100.5758145,100.5760122],"lat":[13.8399351,13.8398593,13.8397386,13.8397272,13.8397235,13.8397364,13.8397813]}]],[[{"lng":[100.5671203,100.5692074],"lat":[13.8275678,13.8265803]}]],[[{"lng":[100.5760205,100.575818,100.5757167,100.5756497,100.5755633,100.575206],"lat":[13.8397201,13.8396698,13.8396565,13.8396582,13.8396694,13.8398765]}]],[[{"lng":[100.5691675,100.5670839],"lat":[13.8265028,13.8274974]}]],[[{"lng":[100.5457039,100.5452067,100.5450308939893],"lat":[13.8194401,13.8184681,13.81810546598954]}]],[[{"lng":[100.5428438,100.5439327],"lat":[13.8082624,13.8078312]}]],[[{"lng":[100.5406042,100.5398287],"lat":[13.8004951,13.8010024]}]],[[{"lng":[100.539867,100.5406713],"lat":[13.8011128,13.8005994]}]],[[{"lng":[100.5438395,100.5428646,100.5427479],"lat":[13.8076101,13.8079882,13.8080334]}]],[[{"lng":[100.6461724,100.64603],"lat":[13.6790182,13.6768792]}]],[[{"lng":[100.6459618,100.6460998],"lat":[13.6768826,13.6790208]}]],[[{"lng":[100.6459335,100.6459618],"lat":[13.676444,13.6768826]}]],[[{"lng":[100.64603,100.6460007],"lat":[13.6768792,13.6764395]}]],[[{"lng":[100.6161368,100.616005],"lat":[13.7403273,13.7424202]}]],[[{"lng":[100.6160844,100.6162167],"lat":[13.7424171,13.7403345]}]],[[{"lng":[100.6149906,100.6153983,100.6166506,100.619839],"lat":[13.7363418,13.7363681,13.7364596,13.7366639]}]],[[{"lng":[100.61984,100.618685,100.6149895],"lat":[13.7366185,13.7365499,13.7363006]}]],[[{"lng":[100.6409921,100.6409837,100.6409804,100.6409853,100.6409972,100.6410142,100.6410381],"lat":[13.7351517,13.7353003,13.7354361,13.7355668,13.7356828,13.7357872,13.735905]}]],[[{"lng":[100.6411384,100.6411154,100.6410994,100.6410882,100.6410836,100.6410847,100.6410906],"lat":[13.7358834,13.7357712,13.7356697,13.735552,13.7354261,13.7353002,13.735158]}]]],["X174466243","X174466253","X801870018","X801870019","X156976853","X1168486112","X1168486115","X1168486118","X1168486120","X1168486122","X1168486128","X1168486130","X1168486132","X32045522","X445301467","X445301468","X1080915202","X1080915203","X140486621","X199487486","X949285579","X199581729","X1080917874","X1080917875","X140477978","X140477984","X199581729.1","X32045522.1","X156763615","X156763620","X156763632","X156763647","X349928113","X461223265","X467429566","X32087539","X156672778","X156672794","X156672798","X349928113.1","X698687600","X1025100187","X1025100188","X1167309628","X253221908","X253221910","X1121015467","X1121015468","X210955651","X210955658","X833123830","X833123832","X1200628059","X1200628060"],"thai_roads[thai_roads$tunnel == \"T\", ]",{"interactive":true,"className":"","pane":"tmap401","stroke":true,"color":["#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000"],"weight":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],"opacity":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],"fill":false,"fillColor":["#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000"],"fillOpacity":0.2,"dashArray":"none","smoothFactor":1,"noClip":false},["<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>174466243<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>174466243<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,115<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>tertiary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Bang Khen<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>174466253<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>174466253<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,115<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>tertiary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Bang Khen<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>801870018<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>801870018<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,114<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>secondary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Bang Kapi<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>801870019<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>801870019<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,114<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>secondary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Bang Kapi<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>156976853<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>156976853<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>B<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Pathum Wan<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>1168486112<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>1168486112<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Pathum Wan<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>1168486115<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>1168486115<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>B<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Pathum Wan<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>1168486118<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>1168486118<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>B<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Pathum Wan<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>1168486120<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>1168486120<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>B<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Pathum Wan<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>1168486122<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>1168486122<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Pathum Wan<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>1168486128<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>1168486128<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Pathum Wan<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>1168486130<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>1168486130<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Pathum Wan<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>1168486132<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>1168486132<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,114<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>secondary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Pathum Wan<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>32045522<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>32045522<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Phaya Thai<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>445301467<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>445301467<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Thon Buri<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>445301468<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>445301468<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Thon Buri<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>1080915202<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>1080915202<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Thon Buri<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>1080915203<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>1080915203<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Thon Buri<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>140486621<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>140486621<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Bangkok Yai<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>199487486<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>199487486<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Bangkok Yai<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>949285579<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>949285579<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Bangkok Yai<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>199581729<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>199581729<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>B<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Bangkok Noi<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>1080917874<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>1080917874<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Bangkok Noi<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>1080917875<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>1080917875<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Bangkok Noi<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>140477978<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>140477978<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Bang Phlat<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>140477984<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>140477984<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Bang Phlat<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>199581729<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>199581729<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>B<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Bang Phlat<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>32045522<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>32045522<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Din Daeng<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>156763615<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>156763615<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Din Daeng<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>156763620<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>156763620<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Din Daeng<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>156763632<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>156763632<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Din Daeng<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>156763647<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>156763647<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Din Daeng<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>349928113<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>349928113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,115<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>tertiary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>B<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Bang Sue<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>461223265<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>461223265<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,111<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>motorway<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Bang Sue<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>467429566<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>467429566<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,111<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>motorway<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Bang Sue<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>32087539<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>32087539<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Chatuchak<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>156672778<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>156672778<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Chatuchak<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>156672794<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>156672794<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Chatuchak<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>156672798<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>156672798<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Chatuchak<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>349928113<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>349928113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,115<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>tertiary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>B<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Chatuchak<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>698687600<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>698687600<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,115<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>tertiary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Chatuchak<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>1025100187<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>1025100187<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,115<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>tertiary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Chatuchak<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>1025100188<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>1025100188<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,115<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>tertiary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Chatuchak<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>1167309628<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>1167309628<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,115<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>tertiary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Chatuchak<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>253221908<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>253221908<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Prawet<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>253221910<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>253221910<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Prawet<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>1121015467<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>1121015467<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Prawet<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>1121015468<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>1121015468<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Prawet<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>210955651<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>210955651<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,114<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>secondary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Suan Luang<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>210955658<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>210955658<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,114<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>secondary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Suan Luang<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>833123830<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>833123830<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,114<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>secondary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Suan Luang<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>833123832<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>833123832<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,114<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>secondary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Suan Luang<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>1200628059<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>1200628059<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Suan Luang<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>1200628060<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>osm_id<\/nobr><\/td><td align=\"right\"><nobr>1200628060<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>code<\/nobr><\/td><td align=\"right\"><nobr>5,113<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>fclass<\/nobr><\/td><td align=\"right\"><nobr>primary<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>oneway<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>maxspeed<\/nobr><\/td><td align=\"right\"><nobr>0<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>layer<\/nobr><\/td><td align=\"right\"><nobr>-1<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>bridge<\/nobr><\/td><td align=\"right\"><nobr>F<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>tunnel<\/nobr><\/td><td align=\"right\"><nobr>T<\/nobr><\/td><\/tr><tr><td style=\"color: #888888;\"><nobr>district<\/nobr><\/td><td align=\"right\"><nobr>Suan Luang<\/nobr><\/td><\/tr><\/table><\/div>"],null,["174466243","174466253","801870018","801870019","156976853","1168486112","1168486115","1168486118","1168486120","1168486122","1168486128","1168486130","1168486132","32045522","445301467","445301468","1080915202","1080915203","140486621","199487486","949285579","199581729","1080917874","1080917875","140477978","140477984","199581729","32045522","156763615","156763620","156763632","156763647","349928113","461223265","467429566","32087539","156672778","156672794","156672798","349928113","698687600","1025100187","1025100188","1167309628","253221908","253221910","1121015467","1121015468","210955651","210955658","833123830","833123832","1200628059","1200628060"],{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addLayersControl","args":[["Esri.WorldGrayCanvas","OpenStreetMap","Esri.WorldTopoMap"],"thai_roads[thai_roads$tunnel == \"T\", ]",{"collapsed":true,"autoZIndex":true,"position":"topleft"}]}],"limits":{"lat":[13.6764395,13.8576551],"lng":[100.4693074,100.6574663]},"fitBounds":[13.6764395,100.4693074,13.8576551,100.6574663,[]]},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="parameters-output-and-dashboard" class="level1">
+<h1>8. Parameters, Output, and Dashboard</h1>
+<p>Here are the specific parameters for each dashboard under EDA, and a screenshot of their respective end results:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Basic Distribution</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Ranking</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false">Spatial Points</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false">Road Network</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<table class="table">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 80%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameters</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Province</td>
+<td>Select specific province to filter by, or “All” to view all the province at once.</td>
+</tr>
+<tr class="even">
+<td>X Variable</td>
+<td>The variables of the thai_accidents dataset to display the distribution by.</td>
+</tr>
+<tr class="odd">
+<td>Proportion Variable</td>
+<td>Variable to further segment the distribution by, “None” if want to disable proportion.</td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/basic_distribution.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Basic Distribution</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/proportion.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Proportion Distribution</figcaption>
+</figure>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<table class="table">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 78%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameters</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Ranking Variables</td>
+<td>Variables to rank the plot by</td>
+</tr>
+<tr class="even">
+<td>Number Slider</td>
+<td>To decide on the top x number of elements of a variable to display</td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/ranking.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Ranking Plot</figcaption>
+</figure>
+</div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<table class="table">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 78%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameters</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Province Filter</td>
+<td>Select specific province to filter by, or “All” to view all the province at once.</td>
+</tr>
+<tr class="even">
+<td>Weather Condition Filter</td>
+<td>Filter dataset by whether there’s a weather condition, or “Both” to include both.</td>
+</tr>
+<tr class="odd">
+<td>Fatal Accident Filter</td>
+<td>Filter dataset by whether the accident is fatal or not, or “Both” to include both.</td>
+</tr>
+<tr class="even">
+<td>Days of the week Filter</td>
+<td>Multi-select input to filter by days of the week.</td>
+</tr>
+<tr class="odd">
+<td>Hour of Accident Filter</td>
+<td>Multi-select input to filter by hours of the accident.</td>
+</tr>
+<tr class="even">
+<td>Year Filter</td>
+<td>Slider input to filter by year range of accident.</td>
+</tr>
+<tr class="odd">
+<td>Vehicle Categories Filter</td>
+<td>Select specific vehicle category to filter by, or “All” to filter all the vehicle category at once.</td>
+</tr>
+<tr class="even">
+<td>Accident Categories Filter</td>
+<td>Select specific accident category to filter by, or “All” to filter all the accident category at once.</td>
+</tr>
+<tr class="odd">
+<td>Road Description Filter</td>
+<td>Select specific road description to filter by, or “All” to filter all the road description at once.</td>
+</tr>
+<tr class="even">
+<td>Slope Description Filter</td>
+<td>Select specific slope description to filter by, or “All” to filter all the slope description at once.</td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/sp_filter.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Filter for Spatial Point Map</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/sp_map.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Spatial Point Map</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/sp_table.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Thai Accident Dataset Table</figcaption>
+</figure>
+</div>
+</div>
+<div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
+<table class="table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 86%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameters</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Province Filter</td>
+<td>Select specific province to filter by. “All” option is not available due to limitation on computation power.</td>
+</tr>
+<tr class="even">
+<td>Bridge Filter</td>
+<td>Select yes or no to filter whether there’s a bridge, with “All” to filter for both.</td>
+</tr>
+<tr class="odd">
+<td>Tunnel Filter</td>
+<td>Select yes or no to filter whether there’s a tunnel, with “All” to filter for both.</td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/rn_map.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Road Network Map</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="shiny-app" class="level1">
+<h1>9. Shiny App</h1>
+<p><a href="https://sashimii0219.shinyapps.io/eda_shiny/">Link to Shiny App</a></p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2024-04-12">
+
+<title>ThaiRoad - Initial Exploration of Dataset</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">ThaiRoad</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../gaa-project/project_overview.html" rel="" target="">
+ <span class="menu-text">Project Overview</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-prototypes" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">Prototypes</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-prototypes">    
+        <li>
+    <a class="dropdown-item" href="../gaa-project/data_preparation.html" rel="" target="">
+ <span class="dropdown-text">Data Preparation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../gaa-project/eda.html" rel="" target="">
+ <span class="dropdown-text">Exploratory Data Analysis</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../gaa-project/sppa.html" rel="" target="">
+ <span class="dropdown-text">Spatial Point Pattern Analysis</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../gaa-project/nkde.html" rel="" target="">
+ <span class="dropdown-text">Network Constrained Spatial Point Pattern Analysis</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../gaa-project/poster.html" rel="" target="">
+ <span class="menu-text">Poster</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../gaa-project/user-guide.html" rel="" target="">
+ <span class="menu-text">User Guide</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../gaa-project/Thai_Accidents.html" rel="" target="" aria-current="page">
+ <span class="menu-text">Dataset Exploration</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../gaa-project/MoM.html" rel="" target="">
+ <span class="menu-text">Minutes of Meeting</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/tangxy0321/gga-ThaiRoad" rel="" target=""><i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Initial Exploration of Dataset</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 12, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="getting-started" class="level1">
+<h1>2. Getting Started</h1>
+<section id="loading-r-packages" class="level2">
+<h2 class="anchored" data-anchor-id="loading-r-packages">2.1 Loading R packages</h2>
+<p>The R packages that we will be using in this exercise are as follows:</p>
+<ul>
+<li><p><strong>lubridate:</strong> To handle the date formatting</p></li>
+<li><p><strong>sf:</strong> Import, manage and process vector-based geospatial data in R.</p></li>
+<li><p><strong>tidyverse:</strong> a collection of packages for data science tasks</p></li>
+<li><p><strong>gridExtra:</strong> For displaying plots in the same column/row.</p></li>
+<li><p><strong>tmap:</strong> Provides functions for plotting cartographic quality static point patterns maps or interactive maps by using leaflet API.</p></li>
+<li><p><strong>maptools:</strong> Provides a set of tools for manipulating geographic data. In this take-home exercise, we mainly use it to convert Spatial objects into ppp format of spatstat.</p></li>
+</ul>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, tidyverse, gridExtra, tmap, maptools)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="importing-the-datasets" class="level2">
+<h2 class="anchored" data-anchor-id="importing-the-datasets">2.2 Importing the datasets</h2>
+<p>The datasets that we will be using are as follow:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Thailand Road Accidents Dataset</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Boundary of Thailand</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false">OSM Thailand Roads Dataset</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false">Festive Period Accidents Dataset</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<p>We will first drop the rows that have NA in lon and lat, as they will be useless for our analysis.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>accidents <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"../data/thai_road_accident_2019_2022.csv"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>(latitude) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>(longitude)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>We will then convert the dataframe to SF dataframe, with the EPSG code 4239 for Thailand.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>accidents_sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(accidents, </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"longitude"</span>, <span class="st">"latitude"</span>),</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                       <span class="at">crs=</span><span class="dv">4326</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">4239</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p>We use ADM0_EN dataset as it is the boundary of the whole of Thailand.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>thai_boundary <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"../data/thai_adm_boundary"</span>, </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">layer =</span> <span class="st">"tha_admbnda_adm0_rtsd_20220121"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">4239</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="st">"ADM0_EN"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `tha_admbnda_adm0_rtsd_20220121' from data source 
+  `/Users/tangtang/Desktop/IS415 Geospatial Analytics and Applications/project/gga-ThaiRoad/data/thai_adm_boundary' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 1 feature and 13 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 97.34336 ymin: 5.613038 xmax: 105.637 ymax: 20.46507
+Geodetic CRS:  WGS 84</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(thai_boundary))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Thai_Accidents_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+
+</div>
+<div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
+
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="geospatial-data-wrangling" class="level1">
+<h1><strong>3. Geospatial Data Wrangling</strong></h1>
+<section id="data-pre-processing---thailand-road-accidents-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="data-pre-processing---thailand-road-accidents-dataset">3.1 Data Pre-processing - Thailand Road Accidents Dataset</h2>
+<p>Now let us first take a look at the points on the map.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(accidents_sf) <span class="sc">+</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>(<span class="st">"province_en"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Thai_Accidents_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We can see from the map plot that there are points outside of Thailand, something we would like to exclude. We can do so by using <em><code>st_intersection()</code></em> function on accidents_sf using the thai_boundary.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>accidents_thai_sf <span class="ot">&lt;-</span> <span class="fu">st_intersection</span>(accidents_sf, thai_boundary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="simplifying-variables" class="level3">
+<h3 class="anchored" data-anchor-id="simplifying-variables">3.1.1 Simplifying Variables</h3>
+<p>Before we begin, we should have a look at the dataframe first.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(accidents_thai_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 81,367
+Columns: 18
+$ acc_code                    &lt;int&gt; 571905, 3790870, 599075, 571924, 599523, 5…
+$ incident_datetime           &lt;chr&gt; "2019-01-01 00:00:00", "2019-01-01 00:03:0…
+$ report_datetime             &lt;chr&gt; "2019-01-02 06:11:00", "2020-02-20 13:48:0…
+$ province_th                 &lt;chr&gt; "ลพบุรี", "อุบลราชธานี", "ประจวบคีรีขันธ์", "เชียงใ…
+$ province_en                 &lt;chr&gt; "Loburi", "Ubon Ratchathani", "Prachuap Kh…
+$ agency                      &lt;chr&gt; "department of rural roads", "department o…
+$ route                       &lt;chr&gt; "แยกทางหลวงหมายเลข 21 (กม.ที่ 31+000) - บ้านวั…
+$ vehicle_type                &lt;chr&gt; "motorcycle", "private/passenger car", "mo…
+$ presumed_cause              &lt;chr&gt; "driving under the influence of alcohol", …
+$ accident_type               &lt;chr&gt; "other", "rollover/fallen on straight road…
+$ number_of_vehicles_involved &lt;int&gt; 1, 1, 2, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, …
+$ number_of_fatalities        &lt;int&gt; 0, 0, 1, 0, 0, 0, 0, 1, 3, 0, 0, 1, 0, 0, …
+$ number_of_injuries          &lt;int&gt; 2, 2, 0, 1, 0, 2, 2, 0, 0, 1, 1, 0, 1, 1, …
+$ weather_condition           &lt;chr&gt; "clear", "clear", "clear", "clear", "clear…
+$ road_description            &lt;chr&gt; "straight road", "straight road", "wide cu…
+$ slope_description           &lt;chr&gt; "no slope", "no slope", "slope area", "no …
+$ ADM0_EN                     &lt;chr&gt; "Thailand", "Thailand", "Thailand", "Thail…
+$ geometry                    &lt;POINT [°]&gt; POINT (100.8769 14.95746), POINT (10…</code></pre>
+</div>
+</div>
+<p>There are a few variables we can simplify, and a few variables we can extract from existing ones. Here are the following variables we can create or modify:</p>
+<section id="accident-cause-categories" class="level4">
+<h4 class="anchored" data-anchor-id="accident-cause-categories">Accident Cause Categories</h4>
+<p>Splitting the presumed_cause variable into 5 different categories, mainly Driver Factors, Traffic Violations, External Factors, Speeding (as it is the top leading cause of accidents), and Others.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>accident_categories <span class="ot">&lt;-</span> <span class="fu">unique</span>(accidents_sf<span class="sc">$</span>presumed_cause)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>accident_categories</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "driving under the influence of alcohol"         
+ [2] "speeding"                                       
+ [3] "cutting in closely by people/vehicles/animals"  
+ [4] "failure to yield right of way"                  
+ [5] "failure to yield/signal"                        
+ [6] "falling asleep"                                 
+ [7] "running red lights/traffic signals"             
+ [8] "other"                                          
+ [9] "unfamiliarity with the route/unskilled driving" 
+[10] "vehicle equipment failure"                      
+[11] "illegal overtaking"                             
+[12] "tailgating"                                     
+[13] "ignoring stop sign while leaving intersection"  
+[14] "overloaded vehicle"                             
+[15] "insufficient light"                             
+[16] "disabled vehicle without proper signals"        
+[17] "abrupt lane change"                             
+[18] "debris/obstruction on the road"                 
+[19] "reversing vehicle"                              
+[20] "brake/anti-lock brake system failure"           
+[21] "medical condition"                              
+[22] "vehicle electrical system failure"              
+[23] "driving in the wrong lane"                      
+[24] "straddling lanes"                               
+[25] "dangerous curve"                                
+[26] "failure to signal enter/exit parking"           
+[27] "slippery road"                                  
+[28] "no traffic signs"                               
+[29] "sudden stop"                                    
+[30] "using mobile phone while driving"               
+[31] "driving without headlights/illumination"        
+[32] "worn-out/tire blowout"                          
+[33] "obstruction in sight"                           
+[34] "traffic light system failure"                   
+[35] "disabled vehicle without proper signals/signs"  
+[36] "narrow road"                                    
+[37] "turn signal system failure"                     
+[38] "navigation equipment failure"                   
+[39] "inadequate visibility"                          
+[40] "road in poor condition"                         
+[41] "ป้ายจราจรชำรุด"                                   
+[42] "เส้นแบ่งทิศทางจราจรชำรุด"                           
+[43] "repair/construction on the road"                
+[44] "no presumed cause related to driver"            
+[45] "external disturbance"                           
+[46] "no presumed cause related to vehicle conditions"
+[47] "no presumed cause related to road conditions"   
+[48] "no road divider lines"                          
+[49] "loss of control"                                
+[50] "using psychoactive substances"                  
+[51] "no traffic light system"                        
+[52] "aggressive driving/overtaking"                  
+[53] "internal disturbance"                           
+[54] "มึนเมาจากแอลกอฮอล์"                               </code></pre>
+</div>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>driver_factors <span class="ot">&lt;-</span> accident_categories[<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">6</span>,<span class="dv">9</span>, <span class="dv">14</span>, <span class="dv">21</span>, <span class="dv">30</span>, <span class="dv">44</span>, <span class="dv">49</span>, <span class="dv">50</span>, <span class="dv">52</span><span class="sc">:</span><span class="dv">54</span>)]</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>traffic_violations <span class="ot">&lt;-</span> accident_categories[<span class="fu">c</span>(<span class="dv">3</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">11</span><span class="sc">:</span><span class="dv">13</span>, <span class="dv">16</span>, <span class="dv">17</span>, <span class="dv">19</span>, <span class="dv">23</span><span class="sc">:</span><span class="dv">26</span>, <span class="dv">29</span>, <span class="dv">31</span>, <span class="dv">35</span>)]</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>external_factors <span class="ot">&lt;-</span> accident_categories[<span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">15</span>, <span class="dv">18</span>, <span class="dv">20</span>, <span class="dv">22</span>, <span class="dv">27</span>, <span class="dv">28</span>, <span class="dv">32</span>, <span class="dv">33</span>, <span class="dv">34</span>, <span class="dv">36</span><span class="sc">:</span><span class="dv">38</span>, <span class="dv">39</span>, <span class="dv">40</span><span class="sc">:</span><span class="dv">43</span>, <span class="dv">45</span><span class="sc">:</span><span class="dv">48</span>, <span class="dv">51</span>)]</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>speeding <span class="ot">&lt;-</span> accident_categories[<span class="fu">c</span>(<span class="dv">2</span>)]</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>accidents_thai_sf<span class="sc">$</span><span class="st">"accident_categories"</span> <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ifelse</span>(accidents_thai_sf<span class="sc">$</span>presumed_cause <span class="sc">%in%</span> driver_factors, <span class="st">'driver_factors'</span>, </span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ifelse</span>(accidents_thai_sf<span class="sc">$</span>presumed_cause <span class="sc">%in%</span> traffic_violations, <span class="st">'traffic_violations'</span>, </span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ifelse</span>(accidents_thai_sf<span class="sc">$</span>presumed_cause <span class="sc">%in%</span> external_factors, <span class="st">'external_factors'</span>,</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ifelse</span>(accidents_thai_sf<span class="sc">$</span>presumed_cause <span class="sc">%in%</span> speeding, <span class="st">'speeding'</span>,</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">'others'</span>)))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Notes for Accident Categories:</p>
+<p>16 and 35 same 41 Broken traffic sign &lt;- ป้ายจราจรชำรุด 42 Broken traffic directions divider &lt;- เส้นแบ่งทิศทางจราจรชำ</p>
+</section>
+<section id="vehicle-categories" class="level4">
+<h4 class="anchored" data-anchor-id="vehicle-categories">Vehicle Categories</h4>
+<p>Next up we will split the vehicle_type into 4 categories, two_wheeled, four_wheeled, heavy_duty, and others.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>vehicle_categories <span class="ot">&lt;-</span> <span class="fu">unique</span>(accidents_thai_sf<span class="sc">$</span>vehicle_type)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>vehicle_categories</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "motorcycle"                   "private/passenger car"       
+ [3] "4-wheel pickup truck"         "other"                       
+ [5] "motorized tricycle"           "large truck with trailer"    
+ [7] "van"                          "6-wheel truck"               
+ [9] "7-10-wheel truck"             "bicycle"                     
+[11] "passenger pickup truck"       "pedestrian"                  
+[13] "large passenger vehicle"      "tractor/agricultural vehicle"
+[15] "three-wheeled vehicle"       </code></pre>
+</div>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>two_wheeled <span class="ot">&lt;-</span> vehicle_categories[<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">10</span>,<span class="dv">15</span>)]</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>four_wheeled <span class="ot">&lt;-</span> vehicle_categories[<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">7</span>,<span class="dv">13</span>)]</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>heavy_duty <span class="ot">&lt;-</span> vehicle_categories[<span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">6</span>,<span class="dv">8</span>,<span class="dv">9</span>,<span class="dv">11</span>,<span class="dv">14</span>)]</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>accidents_thai_sf<span class="sc">$</span><span class="st">"vehicle_categories"</span> <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ifelse</span>(accidents_thai_sf<span class="sc">$</span>vehicle_type <span class="sc">%in%</span> two_wheeled, <span class="st">'two_wheeled'</span>, </span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ifelse</span>(accidents_thai_sf<span class="sc">$</span>vehicle_type <span class="sc">%in%</span> four_wheeled, <span class="st">'four_wheeled'</span>, </span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ifelse</span>(accidents_thai_sf<span class="sc">$</span>vehicle_type <span class="sc">%in%</span> heavy_duty, <span class="st">'heavy_duty'</span>, </span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">'others'</span>))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="weather-condition-and-fatality" class="level4">
+<h4 class="anchored" data-anchor-id="weather-condition-and-fatality">Weather Condition and Fatality</h4>
+<p>We can also simplify the weather_condition and number_of_fatalities column to whether there is a weather condition, and if the accident is fatal.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>accidents_thai_sf <span class="ot">&lt;-</span> accidents_thai_sf <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">weather_condition =</span> <span class="fu">ifelse</span>((weather_condition <span class="sc">==</span> <span class="st">"clear"</span>), <span class="st">"no"</span>, <span class="st">"yes"</span>),</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">fatal_accident =</span> <span class="fu">ifelse</span>((number_of_fatalities <span class="sc">&gt;=</span> <span class="dv">1</span>), <span class="st">"yes"</span>, <span class="st">"no"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="datetime" class="level4">
+<h4 class="anchored" data-anchor-id="datetime">Datetime</h4>
+<p>The exact datetime doesn’t really provide us with much details. Let us split convert the incident_datetime into datetime object, then split it into day of the week and hour of accident.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>accidents_thai_sf<span class="sc">$</span>incident_datetime <span class="ot">&lt;-</span> <span class="fu">as_datetime</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  accidents_thai_sf<span class="sc">$</span>incident_datetime)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>accidents_thai_sf <span class="ot">&lt;-</span> accidents_thai_sf <span class="sc">%&gt;%</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">weekday =</span> <span class="fu">wday</span>(incident_datetime,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>                        <span class="at">label=</span><span class="cn">TRUE</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>                        <span class="at">abbr=</span><span class="cn">TRUE</span>),</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">accident_hr =</span> <span class="fu">factor</span>(<span class="fu">hour</span>(incident_datetime), <span class="at">levels =</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">23</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+</section>
+<section id="variables-selection" class="level3">
+<h3 class="anchored" data-anchor-id="variables-selection">3.1.2 Variables Selection</h3>
+<p>With our necessary variables clean, let us drop the variables that we will not be using.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>accidents_thai_sf_clean <span class="ot">&lt;-</span> accidents_thai_sf <span class="sc">%&gt;%</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">14</span><span class="sc">:</span><span class="dv">16</span>,<span class="dv">19</span><span class="sc">:</span><span class="dv">22</span>,<span class="dv">18</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(accidents_thai_sf_clean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 81,367
+Columns: 9
+$ province_en         &lt;chr&gt; "Loburi", "Ubon Ratchathani", "Prachuap Khiri Khan…
+$ weather_condition   &lt;chr&gt; "no", "no", "no", "no", "no", "yes", "no", "no", "…
+$ road_description    &lt;chr&gt; "straight road", "straight road", "wide curve", "s…
+$ slope_description   &lt;chr&gt; "no slope", "no slope", "slope area", "no slope", …
+$ accident_categories &lt;fct&gt; driver_factors, speeding, speeding, driver_factors…
+$ vehicle_categories  &lt;fct&gt; two_wheeled, four_wheeled, two_wheeled, two_wheele…
+$ fatal_accident      &lt;chr&gt; "no", "no", "yes", "no", "no", "no", "no", "yes", …
+$ weekday             &lt;ord&gt; Tue, Tue, Tue, Tue, Tue, Tue, Tue, Tue, Tue, Tue, …
+$ geometry            &lt;POINT [°]&gt; POINT (100.8769 14.95746), POINT (104.8666 1…</code></pre>
+</div>
+</div>
+</section>
+<section id="invalid-geometries" class="level3">
+<h3 class="anchored" data-anchor-id="invalid-geometries">3.1.3 Invalid Geometries</h3>
+</section>
+<section id="missing-values" class="level3">
+<h3 class="anchored" data-anchor-id="missing-values">3.1.4 Missing Values</h3>
+</section>
+<section id="duplicated-points" class="level3">
+<h3 class="anchored" data-anchor-id="duplicated-points">3.1.5 Duplicated Points</h3>
+</section>
+</section>
+<section id="data-pre-processing---osm-thailand-roads-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="data-pre-processing---osm-thailand-roads-dataset">3.2 Data Pre-processing - OSM Thailand Roads Dataset</h2>
+</section>
+</section>
+<section id="exploratory-data-analysis" class="level1">
+<h1><strong>4.</strong> Exploratory Data Analysis</h1>
+<section id="basic-distribution" class="level2">
+<h2 class="anchored" data-anchor-id="basic-distribution">4.1 Basic Distribution</h2>
+<section id="accident-categories" class="level3">
+<h3 class="anchored" data-anchor-id="accident-categories">4.1.1 Accident Categories</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(accidents_thai_sf_clean, <span class="fu">aes</span>(<span class="at">x=</span>accident_categories)) <span class="sc">+</span> </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Accidents by Cause Categories"</span>,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Accident Cause Categories"</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of Accidents"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Thai_Accidents_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="vehicle-categories-1" class="level3">
+<h3 class="anchored" data-anchor-id="vehicle-categories-1">4.1.2 Vehicle Categories</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(accidents_thai_sf_clean, <span class="fu">aes</span>(<span class="at">x=</span>vehicle_categories)) <span class="sc">+</span> </span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Accidents by Vehicle Categories"</span>,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Vehicle Categories"</span>,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of Accidents"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Thai_Accidents_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="day-of-the-week" class="level3">
+<h3 class="anchored" data-anchor-id="day-of-the-week">4.1.3 Day of the Week</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(accidents_thai_sf_clean, <span class="fu">aes</span>(<span class="at">x=</span>weekday)) <span class="sc">+</span> </span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Accidents by Day of the Week"</span>,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Day of the Week"</span>,</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of Accidents"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Thai_Accidents_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="accident-hour" class="level3">
+<h3 class="anchored" data-anchor-id="accident-hour">4.1.4 Accident Hour</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(accidents_thai_sf, <span class="fu">aes</span>(<span class="at">x=</span>accident_hr)) <span class="sc">+</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Accidents by Start Hour"</span>,</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Start Hour"</span>,</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of Accidents"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Thai_Accidents_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="fatal-accident" class="level3">
+<h3 class="anchored" data-anchor-id="fatal-accident">4.1.5 Fatal Accident?</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(accidents_thai_sf_clean, <span class="fu">aes</span>(<span class="at">x =</span> fatal_accident)) <span class="sc">+</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Fatal Accident?"</span>,</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Number of Fatalities"</span>,</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of Accidents"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Thai_Accidents_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="section" class="level3">
+<h3 class="anchored" data-anchor-id="section"></h3>
+</section>
+<section id="bad-weather-condition" class="level3">
+<h3 class="anchored" data-anchor-id="bad-weather-condition">4.1.6 Bad Weather Condition?</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(accidents_thai_sf_clean, <span class="fu">aes</span>(<span class="at">x =</span> weather_condition)) <span class="sc">+</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Weather Condition"</span>,</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Weather Condition"</span>,</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of Accidents"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Thai_Accidents_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="what-causes-fatal-accident" class="level2">
+<h2 class="anchored" data-anchor-id="what-causes-fatal-accident">4.2 What causes fatal accident?</h2>
+<section id="logistic-regression-to-find-statistically-significant-variables" class="level3">
+<h3 class="anchored" data-anchor-id="logistic-regression-to-find-statistically-significant-variables">4.2.1 Logistic Regression to find statistically significant variables</h3>
+<p>To find out which variable heavily influence whether an accident is fatal, we can make use of a Logistic Regression to check which one is statistically significant. We first need to create a temporary dataframe and drop the geometry, as the Logistic Regression model can’t take in geometry values.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>accidents_thai_df <span class="ot">&lt;-</span> <span class="fu">st_drop_geometry</span>(accidents_thai_sf_clean) <span class="sc">%&gt;%</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character), as.factor))</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(<span class="fu">lapply</span>(accidents_thai_df, unique), length)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>        province_en   weather_condition    road_description   slope_description 
+                 78                   2                  19                   3 
+accident_categories  vehicle_categories      fatal_accident             weekday 
+                  5                   4                   2                   7 </code></pre>
+</div>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Logistic Regression</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>glm.def1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(fatal_accident<span class="sc">~</span>.<span class="sc">-</span>province_en, <span class="at">data=</span>accidents_thai_df, <span class="at">family=</span>binomial)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(glm.def1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = fatal_accident ~ . - province_en, family = binomial, 
+    data = accidents_thai_df)
+
+Coefficients:
+                                                       Estimate Std. Error
+(Intercept)                                          -13.605537 135.897115
+weather_conditionyes                                  -0.112968   0.035435
+road_descriptionconnecting to private area            11.590471 135.897042
+road_descriptionconnecting to public/commercial area  11.177053 135.897022
+road_descriptionconnecting to school area             10.880889 135.897239
+road_descriptionfour-way intersection                 11.363376 135.897063
+road_descriptiongrade-separated intersection/ramps    10.054161 135.897701
+road_descriptionlane-changing area                    10.544303 135.901700
+road_descriptionmerge lane                             1.879734 167.455811
+road_descriptionmotorcycle lane                       -0.754759 352.031905
+road_descriptionother                                 10.873442 135.897003
+road_descriptionpedestrian path                        0.865076 352.031907
+road_descriptionroundabout                            11.340871 135.898927
+road_descriptionsharp curve                           11.268776 135.897169
+road_descriptionstraight road                         11.196324 135.897111
+road_descriptiont-intersection                        11.318749 135.897047
+road_descriptionu-turn area                           10.223422 135.901539
+road_descriptionwide curve                            11.291435 135.897114
+road_descriptiony-intersection                        11.017425 135.897154
+road_descriptionzebra crossing/pedestrian crossing     0.876408 352.031907
+slope_descriptionother                                 0.196164   0.175868
+slope_descriptionslope area                           -0.056828   0.058558
+accident_categoriesexternal_factors                   -0.409741   0.072614
+accident_categoriesothers                             -1.089566   0.196320
+accident_categoriesspeeding                           -0.049104   0.028807
+accident_categoriestraffic_violations                  0.438414   0.056211
+vehicle_categoriesheavy_duty                           0.021045   0.031267
+vehicle_categoriesothers                               0.187401   0.068885
+vehicle_categoriestwo_wheeled                          1.640338   0.030746
+weekday.L                                             -0.052820   0.029101
+weekday.Q                                              0.051242   0.029309
+weekday.C                                             -0.001802   0.029271
+weekday^4                                              0.035534   0.029488
+weekday^5                                              0.001722   0.029431
+weekday^6                                              0.025204   0.029708
+                                                     z value Pr(&gt;|z|)    
+(Intercept)                                           -0.100  0.92025    
+weather_conditionyes                                  -3.188  0.00143 ** 
+road_descriptionconnecting to private area             0.085  0.93203    
+road_descriptionconnecting to public/commercial area   0.082  0.93445    
+road_descriptionconnecting to school area              0.080  0.93618    
+road_descriptionfour-way intersection                  0.084  0.93336    
+road_descriptiongrade-separated intersection/ramps     0.074  0.94102    
+road_descriptionlane-changing area                     0.078  0.93816    
+road_descriptionmerge lane                             0.011  0.99104    
+road_descriptionmotorcycle lane                       -0.002  0.99829    
+road_descriptionother                                  0.080  0.93623    
+road_descriptionpedestrian path                        0.002  0.99804    
+road_descriptionroundabout                             0.083  0.93349    
+road_descriptionsharp curve                            0.083  0.93391    
+road_descriptionstraight road                          0.082  0.93434    
+road_descriptiont-intersection                         0.083  0.93362    
+road_descriptionu-turn area                            0.075  0.94003    
+road_descriptionwide curve                             0.083  0.93378    
+road_descriptiony-intersection                         0.081  0.93538    
+road_descriptionzebra crossing/pedestrian crossing     0.002  0.99801    
+slope_descriptionother                                 1.115  0.26468    
+slope_descriptionslope area                           -0.970  0.33181    
+accident_categoriesexternal_factors                   -5.643 1.67e-08 ***
+accident_categoriesothers                             -5.550 2.86e-08 ***
+accident_categoriesspeeding                           -1.705  0.08827 .  
+accident_categoriestraffic_violations                  7.799 6.22e-15 ***
+vehicle_categoriesheavy_duty                           0.673  0.50090    
+vehicle_categoriesothers                               2.720  0.00652 ** 
+vehicle_categoriestwo_wheeled                         53.351  &lt; 2e-16 ***
+weekday.L                                             -1.815  0.06952 .  
+weekday.Q                                              1.748  0.08041 .  
+weekday.C                                             -0.062  0.95092    
+weekday^4                                              1.205  0.22819    
+weekday^5                                              0.059  0.95333    
+weekday^6                                              0.848  0.39623    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 61146  on 81366  degrees of freedom
+Residual deviance: 55564  on 81332  degrees of freedom
+AIC: 55634
+
+Number of Fisher Scoring iterations: 11</code></pre>
+</div>
+</div>
+<p>From the model above, we can see that the more statistically significant variables are accident_categories, vehicle_categories, and weather_condition. Let’s try that again with just these 3 variables.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Logistic Regression with these 3 variables</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>glm.def2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(fatal_accident<span class="sc">~</span>accident_categories <span class="sc">+</span> vehicle_categories <span class="sc">+</span> weather_condition, <span class="at">data=</span>accidents_thai_df, <span class="at">family=</span>binomial)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(glm.def2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = fatal_accident ~ accident_categories + vehicle_categories + 
+    weather_condition, family = binomial, data = accidents_thai_df)
+
+Coefficients:
+                                      Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)                           -2.38686    0.03406 -70.069  &lt; 2e-16 ***
+accident_categoriesexternal_factors   -0.42141    0.07226  -5.831 5.49e-09 ***
+accident_categoriesothers             -1.02153    0.15389  -6.638 3.18e-11 ***
+accident_categoriesspeeding           -0.06471    0.02815  -2.299  0.02153 *  
+accident_categoriestraffic_violations  0.41688    0.05543   7.520 5.47e-14 ***
+vehicle_categoriesheavy_duty           0.01756    0.03117   0.563  0.57312    
+vehicle_categoriesothers               0.18165    0.06852   2.651  0.00802 ** 
+vehicle_categoriestwo_wheeled          1.64715    0.03062  53.795  &lt; 2e-16 ***
+weather_conditionyes                  -0.10081    0.03513  -2.870  0.00411 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 61146  on 81366  degrees of freedom
+Residual deviance: 55650  on 81358  degrees of freedom
+AIC: 55668
+
+Number of Fisher Scoring iterations: 5</code></pre>
+</div>
+</div>
+<p>Most of them are statistically significant at the 0.05 level of significance and above.</p>
+</section>
+<section id="fatality-breakdown-of-accidents-by-variables" class="level3">
+<h3 class="anchored" data-anchor-id="fatality-breakdown-of-accidents-by-variables">4.2.2 Fatality breakdown of accidents by variables</h3>
+<section id="weather" class="level4">
+<h4 class="anchored" data-anchor-id="weather">4.2.2.1 Weather</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>abs_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(accidents_thai_sf_clean, <span class="fu">aes</span>(<span class="at">x =</span> weather_condition, <span class="at">fill =</span> fatal_accident)) <span class="sc">+</span> </span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Number of Fatal Accidents caused by Weather Condition"</span>,</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Bad Weather Condition?"</span>,</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of Accidents"</span>) <span class="sc">+</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>()</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>prop_plot <span class="ot">&lt;-</span> accidents_thai_sf_clean <span class="sc">%&gt;%</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(weather_condition, fatal_accident) <span class="sc">%&gt;%</span>       </span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(weather_condition) <span class="sc">%&gt;%</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pct=</span> <span class="fu">prop.table</span>(n) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(weather_condition, pct, <span class="at">fill=</span>fatal_accident) <span class="sc">+</span></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label=</span><span class="fu">paste0</span>(<span class="fu">sprintf</span>(<span class="st">"%1.1f"</span>, pct),<span class="st">"%"</span>)),</span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>            <span class="at">position=</span><span class="fu">position_stack</span>(<span class="at">vjust=</span><span class="fl">0.5</span>)) <span class="sc">+</span></span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Proportion of Fatal Accidents caused by Weather Condition"</span>,</span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Bad Weather Condition?"</span>,</span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Proportion of Accidents"</span>) <span class="sc">+</span></span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a><span class="fu">grid.arrange</span>(abs_plot, prop_plot, <span class="at">nrow=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Thai_Accidents_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>From this, we can infer that weather conditions in fact is not a direct cause to fatal accident, as proportion of fatal accidents when the weather condition is clear is higher than that of when it is not.</p>
+</section>
+<section id="vehicle-categories-2" class="level4">
+<h4 class="anchored" data-anchor-id="vehicle-categories-2">4.2.2.2 Vehicle Categories</h4>
+<p>What about vehicle categories?</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>abs_plot2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(accidents_thai_sf_clean, <span class="fu">aes</span>(<span class="at">x =</span> vehicle_categories, <span class="at">fill =</span> fatal_accident)) <span class="sc">+</span> </span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Number of Fatal Accidents by Vehicle Categories"</span>,</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Vehicle Categories"</span>,</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of Accidents"</span>) <span class="sc">+</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>()</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>prop_plot2 <span class="ot">&lt;-</span> accidents_thai_sf_clean <span class="sc">%&gt;%</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(vehicle_categories, fatal_accident) <span class="sc">%&gt;%</span>       </span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(vehicle_categories) <span class="sc">%&gt;%</span></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pct=</span> <span class="fu">prop.table</span>(n) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(vehicle_categories, pct, <span class="at">fill=</span>fatal_accident) <span class="sc">+</span></span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label=</span><span class="fu">paste0</span>(<span class="fu">sprintf</span>(<span class="st">"%1.1f"</span>, pct),<span class="st">"%"</span>)),</span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>            <span class="at">position=</span><span class="fu">position_stack</span>(<span class="at">vjust=</span><span class="fl">0.5</span>)) <span class="sc">+</span></span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Proportion of Fatal Accidents by Vehicle Categories"</span>,</span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Vehicle Cateogries"</span>,</span>
+<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Proportion of Accidents"</span>) <span class="sc">+</span></span>
+<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a><span class="fu">grid.arrange</span>(abs_plot2, prop_plot2, <span class="at">nrow=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Thai_Accidents_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Most accidents are caused by heavy_duty vehicles, but the almost 1/3 of all accidents involving two-wheeled vehicles ends up in fatality!</p>
+</section>
+<section id="accident-cause-categories-1" class="level4">
+<h4 class="anchored" data-anchor-id="accident-cause-categories-1">4.2.2.3 Accident Cause Categories</h4>
+<p>Does the cause of accident influence the outcome of it?</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>abs_plot3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(accidents_thai_sf_clean, <span class="fu">aes</span>(<span class="at">x =</span> accident_categories, <span class="at">fill =</span> fatal_accident)) <span class="sc">+</span> </span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Number of Fatal Accidents by Accident Categories"</span>,</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Accident Categories"</span>,</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of Accidents"</span>) <span class="sc">+</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>()</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>prop_plot3 <span class="ot">&lt;-</span> accidents_thai_sf_clean <span class="sc">%&gt;%</span></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(accident_categories, fatal_accident) <span class="sc">%&gt;%</span>       </span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(accident_categories) <span class="sc">%&gt;%</span></span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pct=</span> <span class="fu">prop.table</span>(n) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(accident_categories, pct, <span class="at">fill=</span>fatal_accident) <span class="sc">+</span></span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label=</span><span class="fu">paste0</span>(<span class="fu">sprintf</span>(<span class="st">"%1.1f"</span>, pct),<span class="st">"%"</span>)),</span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>            <span class="at">position=</span><span class="fu">position_stack</span>(<span class="at">vjust=</span><span class="fl">0.5</span>)) <span class="sc">+</span></span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Proportion of Fatal Accidents by Accident Categories"</span>,</span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Accident Cateogries"</span>,</span>
+<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Proportion of Accidents"</span>) <span class="sc">+</span></span>
+<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a><span class="fu">grid.arrange</span>(abs_plot3, prop_plot3, <span class="at">nrow=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Thai_Accidents_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Unsurprisingly, Traffic Violations and Driver Factors have a higher proportion of fatality, though speeding, the leading cause of accidents, have the highest absolute number of fatal accidents.</p>
+<p>More in-depth analysis with a combination of the above?</p>
+</section>
+</section>
+</section>
+<section id="distribution-of-accidents-across-thailand" class="level2">
+<h2 class="anchored" data-anchor-id="distribution-of-accidents-across-thailand">4.3 Distribution of accidents across Thailand</h2>
+<section id="top-10-province-in-highest-number-of-accidents-recorded" class="level3">
+<h3 class="anchored" data-anchor-id="top-10-province-in-highest-number-of-accidents-recorded">4.3.1 Top 10 Province in highest number of accidents recorded</h3>
+<p>Having looked at the cause and effect, let us take a closer look at how it differs when we zoom in to specific provinces. We will first look at the top 10 province that has the highest number of accidents.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>accidents_top10 <span class="ot">&lt;-</span> accidents_thai_sf_clean <span class="sc">%&gt;%</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(province_en) <span class="sc">%&gt;%</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">total_count=</span><span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">top_n</span>(<span class="dv">10</span>, total_count) <span class="sc">%&gt;%</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>  .<span class="sc">$</span>province_en</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>accidents_top10</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "Bangkok"           "Chiang Mai"        "Chon Buri"        
+ [4] "Nakhon Ratchasima" "Pathum Thani"      "Phetchabun"       
+ [7] "Samut Prakan"      "Suphan Buri"       "Surat Thani"      
+[10] "Tak"              </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(accidents_thai_sf_clean[accidents_thai_sf_clean<span class="sc">$</span>province_en <span class="sc">%in%</span> accidents_top10,], </span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x=</span>province_en)) <span class="sc">+</span> <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">hjust=</span><span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Top 10 Provinces with most recorded accidents"</span>,</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Provinces"</span>,</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of Accidents"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Thai_Accidents_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Being the leading province with the highest population density, it make sense that Bangkok has the highest number of accidents.</p>
+</section>
+<section id="bangkok-comparison" class="level3">
+<h3 class="anchored" data-anchor-id="bangkok-comparison">4.3.2 Bangkok Comparison</h3>
+<p>Let’s filter our data to only show records in Bangkok</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>accidents_bkk_sf_clean <span class="ot">&lt;-</span> accidents_thai_sf_clean[accidents_thai_sf_clean<span class="sc">$</span>province_en <span class="sc">==</span> <span class="st">"Bangkok"</span>,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="leading-cause-of-accident" class="level4">
+<h4 class="anchored" data-anchor-id="leading-cause-of-accident">4.3.2.1 Leading cause of accident</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(accidents_bkk_sf_clean, </span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x=</span>accident_categories)) <span class="sc">+</span> <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">hjust=</span><span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Cause for accidents in Bangkok"</span>,</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Causes"</span>,</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of Accidents"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Thai_Accidents_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Speeding is the leading cause of accidents in Bangkok too.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>accidents_bkk_sf_clean</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 6089 features and 8 fields
+Geometry type: POINT
+Dimension:     XY
+Bounding box:  xmin: 100.3368 ymin: 13.60823 xmax: 100.9319 ymax: 13.94986
+Geodetic CRS:  Indian 1954
+First 10 features:
+    province_en weather_condition road_description slope_description
+48      Bangkok                no            other             other
+82      Bangkok                no    straight road             other
+121     Bangkok                no    straight road          no slope
+241     Bangkok                no    straight road          no slope
+276     Bangkok                no    straight road          no slope
+301     Bangkok                no    straight road          no slope
+306     Bangkok                no    straight road          no slope
+312     Bangkok                no    straight road          no slope
+335     Bangkok                no    straight road             other
+352     Bangkok                no    straight road          no slope
+    accident_categories vehicle_categories fatal_accident weekday
+48               others             others             no     Tue
+82               others             others             no     Tue
+121      driver_factors       four_wheeled             no     Tue
+241            speeding       four_wheeled             no     Tue
+276            speeding         heavy_duty             no     Tue
+301            speeding       four_wheeled             no     Tue
+306            speeding       four_wheeled             no     Tue
+312            speeding         heavy_duty             no     Tue
+335              others             others             no     Wed
+352      driver_factors       four_wheeled             no     Wed
+                     geometry
+48  POINT (100.6141 13.78879)
+82  POINT (100.6141 13.78879)
+121 POINT (100.3947 13.62229)
+241 POINT (100.3482 13.78657)
+276 POINT (100.3777 13.78491)
+301 POINT (100.7061 13.74549)
+306 POINT (100.4094 13.66938)
+312 POINT (100.6817 13.86652)
+335 POINT (100.5838 13.70921)
+352 POINT (100.3776 13.78487)</code></pre>
+</div>
+</div>
+</section>
+<section id="accident-fatality-rate" class="level4">
+<h4 class="anchored" data-anchor-id="accident-fatality-rate">4.3.2.2 Accident fatality rate</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(accidents_bkk_sf_clean, <span class="fu">aes</span>(<span class="at">x =</span> fatal_accident)) <span class="sc">+</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Fatal Accident?"</span>,</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Number of Fatalities"</span>,</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of Accidents"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Thai_Accidents_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Fatality rate of accidents in Bangkok is overwhelmingly low for some reason. Worth taking a look into?</p>
+</section>
+</section>
+<section id="which-province-has-highest-fatality-rate" class="level3">
+<h3 class="anchored" data-anchor-id="which-province-has-highest-fatality-rate">4.3.3 Which province has highest fatality rate?</h3>
+<p>TBC</p>
+</section>
+</section>
+<section id="is-there-a-relationship-between-festive-periods-and-accident-rate" class="level2">
+<h2 class="anchored" data-anchor-id="is-there-a-relationship-between-festive-periods-and-accident-rate">4.4 Is there a relationship between festive periods and accident rate?</h2>
+</section>
+</section>
+<section id="extras" class="level1">
+<h1><strong>-. Extras</strong></h1>
+<p>There are points with unknown province well within the boundary of Thailand.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>unknown <span class="ot">&lt;-</span> accidents_thai_sf_clean <span class="sc">%&gt;%</span> <span class="fu">filter</span>(province_en <span class="sc">==</span> <span class="st">"unknown"</span>)</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>unknown</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 17 features and 8 fields
+Geometry type: POINT
+Dimension:     XY
+Bounding box:  xmin: 99.05025 ymin: 6.579508 xmax: 103.651 ymax: 18.35884
+Geodetic CRS:  Indian 1954
+First 10 features:
+   province_en weather_condition road_description slope_description
+1      unknown                no    straight road          no slope
+2      unknown                no            other             other
+3      unknown                no            other             other
+4      unknown                no    straight road          no slope
+5      unknown                no            other             other
+6      unknown               yes    straight road          no slope
+7      unknown                no    straight road          no slope
+8      unknown                no    straight road        slope area
+9      unknown                no    straight road          no slope
+10     unknown                no    straight road          no slope
+   accident_categories vehicle_categories fatal_accident weekday
+1             speeding         heavy_duty             no     Mon
+2             speeding         heavy_duty            yes     Sat
+3             speeding         heavy_duty            yes     Sun
+4       driver_factors         heavy_duty             no     Fri
+5     external_factors         heavy_duty             no     Sun
+6             speeding         heavy_duty             no     Sat
+7       driver_factors        two_wheeled            yes     Fri
+8             speeding         heavy_duty             no     Thu
+9             speeding             others             no     Mon
+10            speeding       four_wheeled             no     Wed
+                    geometry
+1  POINT (100.9371 12.99688)
+2  POINT (100.5634 15.32747)
+3   POINT (103.651 18.35884)
+4  POINT (99.05025 8.257525)
+5  POINT (100.7342 14.58477)
+6  POINT (100.6205 14.05743)
+7   POINT (99.82965 13.3123)
+8  POINT (99.07149 9.972287)
+9  POINT (100.9956 13.25096)
+10 POINT (101.5332 13.78469)</code></pre>
+</div>
+</div>
+<p>By extracting them out we can see that there are 17 points</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(unknown) <span class="sc">+</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>(<span class="st">"province_en"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Thai_Accidents_files/figure-html/unnamed-chunk-36-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Loading the provinces</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>thai_provinces <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"../data/thai_adm_boundary"</span>, </span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">layer =</span> <span class="st">"tha_admbnda_adm1_rtsd_20220121"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">4239</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="st">"ADM1_EN"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `tha_admbnda_adm1_rtsd_20220121' from data source 
+  `/Users/tangtang/Desktop/IS415 Geospatial Analytics and Applications/project/gga-ThaiRoad/data/thai_adm_boundary' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 77 features and 16 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 97.34336 ymin: 5.613038 xmax: 105.637 ymax: 20.46507
+Geodetic CRS:  WGS 84</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(thai_provinces)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 77
+Columns: 2
+$ ADM1_EN  &lt;chr&gt; "Bangkok", "Samut Prakan", "Nonthaburi", "Pathum Thani", "Phr…
+$ geometry &lt;MULTIPOLYGON [°]&gt; MULTIPOLYGON (((100.6173 13..., MULTIPOLYGON (((…</code></pre>
+</div>
+</div>
+<p>Merging the provinces to the unknown points, we can actually assign their correct province to them, though not sure if the provinces here are standardized to the one provided in the thailand accidents dataset.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(<span class="fu">st_intersection</span>(unknown, thai_provinces))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 17
+Columns: 10
+$ province_en         &lt;chr&gt; "unknown", "unknown", "unknown", "unknown", "unkno…
+$ weather_condition   &lt;chr&gt; "no", "yes", "no", "no", "no", "no", "no", "no", "…
+$ road_description    &lt;chr&gt; "straight road", "straight road", "straight road",…
+$ slope_description   &lt;chr&gt; "no slope", "no slope", "no slope", "other", "no s…
+$ accident_categories &lt;fct&gt; speeding, speeding, speeding, speeding, speeding, …
+$ vehicle_categories  &lt;fct&gt; heavy_duty, heavy_duty, heavy_duty, four_wheeled, …
+$ fatal_accident      &lt;chr&gt; "no", "no", "no", "no", "no", "no", "no", "no", "n…
+$ weekday             &lt;ord&gt; Wed, Sat, Thu, Thu, Mon, Sun, Mon, Mon, Wed, Sun, …
+$ ADM1_EN             &lt;chr&gt; "Bangkok", "Pathum Thani", "Pathum Thani", "Phra N…
+$ geometry            &lt;POINT [°]&gt; POINT (100.4502 13.66487), POINT (100.6205 1…</code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
