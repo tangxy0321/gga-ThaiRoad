@@ -21,6 +21,13 @@
     "text": "Generate line centre points\n\n\nCode\nsamples &lt;- lines_center(lixels)\ndensities &lt;- nkde(road_prov_sf,\n                  events = crime_data_filtered,\n                  w = rep(1, nrow(crime_data_filtered)),\n                  samples = samples,\n                  ## important\n                  kernel_name = \"quartic\",\n                  bw = 500,\n                  ## important\n                  div = \"bw\",\n                  method = \"simple\",\n                  digits = 1,\n                  tol = 1,\n                  grid_shape = c(1,1),\n                  max_depth = 8,\n                  # aggregate events within 10m radius (faster calculation)\n                  agg = 10,\n                  sparse = TRUE,\n                  verbose = FALSE\n                  )"
   },
   {
+    "objectID": "gaa-project/nkde.html#generate-plot",
+    "href": "gaa-project/nkde.html#generate-plot",
+    "title": "Network-constrained 1st-Order Spatial Point Pattern Analysis",
+    "section": "Generate plot",
+    "text": "Generate plot\n\n\nCode\nsamples$density &lt;- densities\nlixels$density &lt;- densities\n\nsamples$density &lt;- samples$density*1000\nlixels$density &lt;- lixels$density*1000\n\n\n\n\nCode\ntmap_mode('view')\ntm_shape(lixels) +\n  tm_lines(col=\"density\",\n           lwd = 3)\n\n\n\n\n\n\n\nCode\ntmap_mode('plot')"
+  },
+  {
     "objectID": "gaa-project/project_overview.html",
     "href": "gaa-project/project_overview.html",
     "title": "Spatial Points Pattern Analysis on Road Accidents in Thailand",
@@ -327,19 +334,5 @@
     "title": "Initial Exploration of Dataset",
     "section": "4.4 Is there a relationship between festive periods and accident rate?",
     "text": "4.4 Is there a relationship between festive periods and accident rate?"
-  },
-  {
-    "objectID": "gaa-project/nkde.html#generate-plot",
-    "href": "gaa-project/nkde.html#generate-plot",
-    "title": "Network-constrained 1st-Order Spatial Point Pattern Analysis",
-    "section": "Generate plot",
-    "text": "Generate plot\n\n\nCode\nsamples$density &lt;- densities\nlixels$density &lt;- densities\n\nsamples$density &lt;- samples$density*1000\nlixels$density &lt;- lixels$density*1000\n\n\n\n\nCode\ntmap_mode('view')\ntm_shape(lixels) +\n  tm_lines(col=\"density\",\n           lwd = 3)\n\n\n\n\n\n\n\nCode\ntmap_mode('plot')"
-  },
-  {
-    "objectID": "gaa-project/user-guide.html",
-    "href": "gaa-project/user-guide.html",
-    "title": "User Guide",
-    "section": "",
-    "text": "Link to the original document: Click here"
   }
 ]
