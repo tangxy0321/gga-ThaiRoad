@@ -21,12 +21,16 @@ pacman::p_load(sf,tidyverse,spNetwork,tmap,classInt, viridis)
 
 # Import data
 
+Prototype was done focusing on provinces of Thailand. Yet in the actual shiny app due to technical restrictions, we changed to be targeting at Bangkok districts only.
+
 ```{r}
-crime_data <- read_rds("../../data/proj_data/rds/accidents_thai.rds")
-thai_bound <- st_read(dsn = "../../data/proj_data/thai_adm_boundary",
-                      layer = "tha_admbnda_adm1_rtsd_20220121")
-# thai_bound <- read_rds("../../data/proj_data/rds/thai_boundary.rds")
-thai_road <- read_rds("../../data/proj_data/rds/thai_roads.rds")
+crime_data <- read_rds("../data/rds/accidents_thai.rds") %>% 
+  st_transform(crs = 32648)
+thai_bound <- st_read(dsn = "../data/thai_adm_boundary",
+                      layer = "tha_admbnda_adm2_rtsd_20220121") %>% 
+  st_transform(crs = 32648)
+thai_road <- read_rds("../data/rds/thai_roads.rds") %>% 
+  st_transform(crs = 32648)
 ```
 
 # Visualising difference in network constrained kernel density through different filters by columns
@@ -43,13 +47,7 @@ But let's visualised the overall look
 
 ```{r}
 #| fig-width: 12
-#| fig-height:12
-# tmap_mode("view")
-# tm_shape(crime_data) +
-#   tm_dots() +
-#   tm_shape(thai_road) +
-#   tm_lines()
-# tmap_mode("plot")
+#| fig-height: 12
 plot(crime_data)
 ```
 
@@ -67,8 +65,7 @@ accident_category = "speeding"
 fatal = "yes"
 
 crime_data_filtered = crime_data %>% 
-  filter(province_en == province_factor,
-         accident_categories == accident_category,
+  filter(accident_categories == accident_category,
          fatal_accident == fatal)
 ```
 
@@ -77,7 +74,8 @@ crime_data_filtered = crime_data %>%
 ### Get the portion of road network for the selected province
 
 ```{r}
-thai_prov <- thai_bound[thai_bound$ADM1_EN == province_factor]
+thai_prov <- thai_bound %>% 
+  filter(ADM1_EN == province_factor)
 ```
 
 ```{r}
@@ -90,12 +88,21 @@ tm_shape(thai_road) +
   tm_lines()
 ```
 
+```{r}
+thai_road <- thai_road %>%
+  filter(fclass %in% c("motorway","primary","secondary","tertiary"))
+road_prov <- st_intersection(thai_road, thai_prov)
+road_prov_sf <- st_cast(st_collection_extract(road_prov,
+                                             type = "LINESTRING"),"LINESTRING")
+
+```
+
 ## Prepare `lixel` object
 
 1st try with 1000m diameter
 
 ```{r}
-lixels <- lixelize_lines(thai_road,
+lixels <- lixelize_lines(road_prov_sf,
                          1000,
                          mindist = 500)
 ```
@@ -104,13 +111,13 @@ lixels <- lixelize_lines(thai_road,
 
 ```{r}
 samples <- lines_center(lixels)
-densities <- nkde(thai_road,
-                  events = childcare,
-                  w = rep(1, nrow(childcare)),
+densities <- nkde(road_prov_sf,
+                  events = crime_data_filtered,
+                  w = rep(1, nrow(crime_data_filtered)),
                   samples = samples,
                   ## important
                   kernel_name = "quartic",
-                  bw = 300,
+                  bw = 500,
                   ## important
                   div = "bw",
                   method = "simple",
@@ -118,18 +125,31 @@ densities <- nkde(thai_road,
                   tol = 1,
                   grid_shape = c(1,1),
                   max_depth = 8,
-                  # aggregate events within 5m radius (faster calculation)
-                  agg = 5,
+                  # aggregate events within 10m radius (faster calculation)
+                  agg = 10,
                   sparse = TRUE,
                   verbose = FALSE
                   )
 ```
 
-## Generate plot
+## Generate plot 
+```{r}
+samples$density <- densities
+lixels$density <- densities
+
+samples$density <- samples$density*1000
+lixels$density <- lixels$density*1000
+```
 
 ```{r}
-
+tmap_mode('view')
+tm_shape(lixels) +
+  tm_lines(col="density",
+           lwd = 3)
+tmap_mode('plot')
 ```
+
+
 
 # UI design for Analysis
 

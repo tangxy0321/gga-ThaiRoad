@@ -44,7 +44,7 @@ The datasets that we will be using are as follow:
 We will first drop the rows that have NA in lon and lat, as they will be useless for our analysis.
 
 ```{r}
-accidents <- read.csv("data/thai_road_accident_2019_2022.csv") %>% 
+accidents <- read.csv("../data/thai_road_accident_2019_2022.csv") %>% 
   drop_na(latitude) %>% 
   drop_na(longitude)
 ```
@@ -63,7 +63,7 @@ accidents_sf <- st_as_sf(accidents,
 We use ADM0_EN dataset as it is the boundary of the whole of Thailand.
 
 ```{r}
-thai_boundary <- st_read(dsn = "data/thai_adm_boundary", 
+thai_boundary <- st_read(dsn = "../data/thai_adm_boundary", 
                  layer = "tha_admbnda_adm0_rtsd_20220121") %>%
   st_transform(crs = 4239) %>%
   dplyr::select("ADM0_EN")
@@ -481,7 +481,7 @@ tm_shape(unknown) +
 Loading the provinces
 
 ```{r}
-thai_provinces <- st_read(dsn = "data/thai_adm_boundary", 
+thai_provinces <- st_read(dsn = "../data/thai_adm_boundary", 
                  layer = "tha_admbnda_adm1_rtsd_20220121") %>%
   st_transform(crs = 4239) %>%
   dplyr::select("ADM1_EN")

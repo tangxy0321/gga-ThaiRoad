@@ -44,7 +44,7 @@ The datasets that we will be using are as follow:
 We will first drop the rows that have NA in lon and lat, as they will be useless for our analysis.
 
 ```{r}
-accidents <- read.csv("./data/thai_road_accident_2019_2022.csv") %>% 
+accidents <- read.csv("../data/thai_road_accident_2019_2022.csv") %>% 
   drop_na(latitude) %>% 
   drop_na(longitude)
 ```
@@ -63,7 +63,7 @@ accidents_sf <- st_as_sf(accidents,
 We use ADM0_EN dataset as it is the boundary of the whole of Thailand.
 
 ```{r}
-thai_boundary <- st_read(dsn = "./data/thai_adm_boundary", 
+thai_boundary <- st_read(dsn = "../data/thai_adm_boundary", 
                  layer = "tha_admbnda_adm2_rtsd_20220121") %>%
                 st_transform(crs = 32648) %>% 
                 filter(ADM1_EN == "Bangkok") 
@@ -73,7 +73,7 @@ thai_boundary
 ## OSM Thailand Roads Dataset
 
 ```{r}
-thai_roads <- st_read(dsn = "./data/thai_road_osm", 
+thai_roads <- st_read(dsn = "../data/thai_road_osm", 
               layer = "gis_osm_roads_free_1") %>%
               filter(fclass %in% c("motorway","primary","secondary","tertiary")) %>% 
               st_transform(crs = 32648) %>%
@@ -297,7 +297,7 @@ No missing data as well.
 ## 6.1 Loading layers dataset
 
 ```{r}
-thai_layer <- st_read(dsn = "./data/thai_adm_boundary", 
+thai_layer <- st_read(dsn = "../data/thai_adm_boundary", 
                  layer = "tha_admbnda_adm2_rtsd_20220121") %>%
                 st_transform(crs = 32648) %>%
                 filter(ADM1_EN == "Bangkok") 
@@ -322,15 +322,15 @@ unique(st_geometry_type(road_province$geometry))
 ```{r}
 #|eval: false
 write_rds(accidents_thai_sf_clean,
-          "./data/rds/accidents_thai.rds")
+          "../data/rds/accidents_thai.rds")
 
 write_rds(thai_boundary,
-          "./data/rds/thai_boundary.rds")
+          "../data/rds/thai_boundary.rds")
 
 write_rds(road_province,
-          "./data/rds/thai_roads.rds")
+          "../data/rds/thai_roads.rds")
 ```
 
 ```{r}
-read_rds("./data/rds/accidents_thai.rds")
+read_rds("../data/rds/accidents_thai.rds")
 ```

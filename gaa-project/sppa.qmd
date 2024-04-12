@@ -31,8 +31,10 @@ pacman::p_load(maptools, raster, sf, st, spatstat, tidyverse, tmap)
 We will be importing the .RDS file prepared in the **data_preparation** document.
 
 ```{r}
-accidents_thai <- read_rds("data/rds/accidents_thai.rds")
-thai_boundary <- read_rds("data/rds/thai_boundary.rds")
+accidents_thai <- read_rds("../data/rds/accidents_thai.rds") %>% 
+  st_transform(crs = 32648)
+thai_boundary <- read_rds("../data/rds/thai_boundary.rds") %>% 
+  st_transform(crs = 32648)
 ```
 
 # **3. Data wrangling**

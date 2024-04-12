@@ -24,7 +24,7 @@ website:
             href: gaa-project/sppa.html
             
           - text: Network Constrained Spatial Point Pattern Analysis
-            # href: gaa-project/<file_name>.html
+            href: gaa-project/nkde.html
         
       - href: gaa-project/poster.html
         text: Poster
