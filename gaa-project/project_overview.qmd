@@ -29,7 +29,7 @@ The team would be creating an application using shiny that allows the user to do
 
 2.  1st Order Kernel Density Estimation
 
-    a.  Fixed and Adaptived Kernel Density Estimation
+    a.  Fixed and Adaptive Kernel Density Estimation
 
     b.  Nearest Neighbour Analysis
 
@@ -41,9 +41,9 @@ The team would be creating an application using shiny that allows the user to do
 
 4.  Network-constrained Spatial Point Pattern Analysis
 
-    a\. Network-constrained Kernel Density Estimation (NKDE)
+    a.  Network-constrained 1st-order Kernel Density Estimation (NKDE)
 
-    b\. Temporal Network Kernel Density Estimation (TNKDE)
+    b.  Network-constrained 2nd-order Kernel Density Estimation (G- and K- functions analysis)
 
 ## **4. Relevant Work**
 
@@ -157,15 +157,13 @@ In this segment, we will use 2nd Order Kernel Density Estimation methods instead
 
 #### **6.3.4. Network-constrained Spatial Point Patterns Analysis**
 
-**Network-constrained Kernel Density Estimation (NKDE)**
+**Network-constrained 1st-order Kernel Density Estimation (NKDE)**
 
 We will also explore the network-constrained spatial point analysis to gather insights into how the city's road network contributes to accident occurrences, allowing for targeted interventions in critical areas.
 
-**Temporal Network Kernel Density Estimation (TNKDE)**
+**Network-constrained 2nd-order Kernel Density Estimation**
 
-In addition to that, we will explore whether festive periods contribute to the occurrence of traffic accidents. By examining temporal patterns and correlating them with festive events, we seek to provide a comprehensive understanding of the factors influencing road safety during celebratory periods.
-
-Additionally, the analysis will involve exploring Network G- and K- Functions to further assess spatial and temporal patterns within the context of the road network.
+In addition to that, we will explore Network G- and K- Functions to assess spatial patterns within the context of the road network of specific districts of Bangkok. The functions focuses on investigating the existence of potential clusters within the district, offering the user potential directions to cause(s) of road accidents observed.
 
 #### **6.3.4. Interactive dashboards using Shiny**
 
@@ -236,7 +234,7 @@ variable to select for G/F/K/L Functions.
 ## 8. Assignment of Work
 
 | Tan Jun Sheng Jackson     | Tang Xin Yi                                            | Teo Ying Shi                        |
-|---------------------|-------------------------------|---------------------|
+|---------------------|------------------------------|---------------------|
 | Data Preparation          | Network-constrained Kernel Density Estimation          | 1st-order Kernel Density Estimation |
 | Exploratory Data Analysis | Temporal Network-constrained Kernel Density Estimation | 2nd-order Kernel Density Estimation |
 
