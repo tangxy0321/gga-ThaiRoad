@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2024-04-12">
+<meta name="dcterms.date" content="2024-04-14">
 
 <title>ThaiRoad - Initial Exploration of Dataset</title>
 <style>
@@ -152,6 +152,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Poster</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="https://sashimii0219.shinyapps.io/eda_shiny/" rel="" target="">
+ <span class="menu-text">Shiny Application</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="../gaa-project/user-guide.html" rel="" target="">
  <span class="menu-text">User Guide</span></a>
   </li>  
@@ -196,7 +200,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 12, 2024</p>
+      <p class="date">April 14, 2024</p>
     </div>
   </div>
   
@@ -265,8 +269,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `tha_admbnda_adm0_rtsd_20220121' from data source 
-  `/Users/tangtang/Desktop/IS415 Geospatial Analytics and Applications/project/gga-ThaiRoad/data/thai_adm_boundary' 
-  using driver `ESRI Shapefile'
+  `C:\ys-tx\gga-ThaiRoad\data\thai_adm_boundary' using driver `ESRI Shapefile'
 Simple feature collection with 1 feature and 13 fields
 Geometry type: MULTIPOLYGON
 Dimension:     XY
@@ -680,26 +683,26 @@ glm(formula = fatal_accident ~ . - province_en, family = binomial,
 
 Coefficients:
                                                        Estimate Std. Error
-(Intercept)                                          -13.605537 135.897115
+(Intercept)                                          -13.605537 135.897116
 weather_conditionyes                                  -0.112968   0.035435
-road_descriptionconnecting to private area            11.590471 135.897042
-road_descriptionconnecting to public/commercial area  11.177053 135.897022
-road_descriptionconnecting to school area             10.880889 135.897239
-road_descriptionfour-way intersection                 11.363376 135.897063
-road_descriptiongrade-separated intersection/ramps    10.054161 135.897701
-road_descriptionlane-changing area                    10.544303 135.901700
-road_descriptionmerge lane                             1.879734 167.455811
-road_descriptionmotorcycle lane                       -0.754759 352.031905
-road_descriptionother                                 10.873442 135.897003
-road_descriptionpedestrian path                        0.865076 352.031907
-road_descriptionroundabout                            11.340871 135.898927
-road_descriptionsharp curve                           11.268776 135.897169
-road_descriptionstraight road                         11.196324 135.897111
-road_descriptiont-intersection                        11.318749 135.897047
-road_descriptionu-turn area                           10.223422 135.901539
-road_descriptionwide curve                            11.291435 135.897114
-road_descriptiony-intersection                        11.017425 135.897154
-road_descriptionzebra crossing/pedestrian crossing     0.876408 352.031907
+road_descriptionconnecting to private area            11.590471 135.897044
+road_descriptionconnecting to public/commercial area  11.177053 135.897023
+road_descriptionconnecting to school area             10.880889 135.897240
+road_descriptionfour-way intersection                 11.363376 135.897065
+road_descriptiongrade-separated intersection/ramps    10.054161 135.897703
+road_descriptionlane-changing area                    10.544303 135.901702
+road_descriptionmerge lane                             1.879734 167.455812
+road_descriptionmotorcycle lane                       -0.754759 352.031906
+road_descriptionother                                 10.873442 135.897004
+road_descriptionpedestrian path                        0.865076 352.031908
+road_descriptionroundabout                            11.340871 135.898928
+road_descriptionsharp curve                           11.268776 135.897171
+road_descriptionstraight road                         11.196324 135.897113
+road_descriptiont-intersection                        11.318749 135.897049
+road_descriptionu-turn area                           10.223422 135.901540
+road_descriptionwide curve                            11.291435 135.897115
+road_descriptiony-intersection                        11.017425 135.897156
+road_descriptionzebra crossing/pedestrian crossing     0.876408 352.031908
 slope_descriptionother                                 0.196164   0.175868
 slope_descriptionslope area                           -0.056828   0.058558
 accident_categoriesexternal_factors                   -0.409741   0.072614
@@ -1120,8 +1123,7 @@ First 10 features:
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `tha_admbnda_adm1_rtsd_20220121' from data source 
-  `/Users/tangtang/Desktop/IS415 Geospatial Analytics and Applications/project/gga-ThaiRoad/data/thai_adm_boundary' 
-  using driver `ESRI Shapefile'
+  `C:\ys-tx\gga-ThaiRoad\data\thai_adm_boundary' using driver `ESRI Shapefile'
 Simple feature collection with 77 features and 16 fields
 Geometry type: MULTIPOLYGON
 Dimension:     XY

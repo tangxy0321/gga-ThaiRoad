@@ -28,6 +28,9 @@ website:
         
       - href: gaa-project/poster.html
         text: Poster
+
+      - href: https://sashimii0219.shinyapps.io/eda_shiny/
+        text: Shiny Application
         
       - href: gaa-project/user-guide.html
         text: User Guide
