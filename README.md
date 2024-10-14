@@ -2,6 +2,6 @@
 
 IS415 Geospatial Analytics and Applications
 
-Previously CrimeWatchUK
+The application deployed on Shiny Apps is available here:
 
-Please change another name
+https://sashimii0219.shinyapps.io/eda_shiny/
